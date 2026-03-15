@@ -3,1083 +3,1123 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A Feminist Reading — Novel Corpus Analysis</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<title>Reading Power Through Data</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #1a1612;
-    --ink-soft: #3d3530;
-    --ink-muted: #7a6f68;
-    --parchment: #f5f0e8;
-    --parchment-dark: #ece5d5;
-    --parchment-deep: #ddd3bc;
-    --accent-v: #8b3a3a;
-    --accent-c: #2a4a6b;
-    --accent-shared: #4a6b3a;
-    --rule: #c8bfad;
-    --serif: 'Playfair Display', Georgia, serif;
-    --body: 'Crimson Pro', Georgia, serif;
-    --mono: 'JetBrains Mono', monospace;
+    --ink: #1a1714;
+    --paper: #f5f0e8;
+    --cream: #ede8dc;
+    --warm-mid: #c4b99a;
+    --accent-g: #2d6a4f;
+    --accent-s: #4a3f8f;
+    --accent-v: #8b3a2a;
+    --accent-c: #1a5276;
+    --accent-gold: #b8860b;
+    --accent-red: #9b2335;
+    --rule: #c4b99a;
+    --text-muted: #7a7060;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
   html { scroll-behavior: smooth; }
 
   body {
-    background: var(--parchment);
+    background: var(--paper);
     color: var(--ink);
-    font-family: var(--body);
-    font-size: 18px;
-    line-height: 1.7;
-    min-height: 100vh;
-  }
-
-  /* Grain overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.6;
-  }
-
-  /* ─── HEADER ─── */
-  header {
-    border-bottom: 2px solid var(--ink);
-    padding: 3rem 4rem 2rem;
-    position: relative;
-  }
-
-  .journal-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--ink-muted);
-    margin-bottom: 1.5rem;
-  }
-
-  h1 {
-    font-family: var(--serif);
-    font-size: clamp(2.2rem, 5vw, 4rem);
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    margin-bottom: 0.5rem;
-  }
-
-  h1 em {
-    font-style: italic;
-    color: var(--ink-soft);
-  }
-
-  .subtitle {
-    font-family: var(--body);
-    font-size: 1.1rem;
-    color: var(--ink-muted);
-    font-style: italic;
-    margin-bottom: 2rem;
-  }
-
-  .nav-pills {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-top: 1.5rem;
-  }
-
-  .nav-pill {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 0.35rem 0.9rem;
-    border: 1px solid var(--ink-muted);
-    border-radius: 2px;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: transparent;
-    color: var(--ink-soft);
-    text-decoration: none;
-  }
-
-  .nav-pill:hover, .nav-pill.active {
-    background: var(--ink);
-    color: var(--parchment);
-    border-color: var(--ink);
-  }
-
-  /* ─── LAYOUT ─── */
-  .page-grid {
-    display: grid;
-    grid-template-columns: 260px 1fr;
-    min-height: calc(100vh - 160px);
-  }
-
-  aside {
-    border-right: 1px solid var(--rule);
-    padding: 2rem 1.5rem;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-  }
-
-  .aside-section {
-    margin-bottom: 2rem;
-  }
-
-  .aside-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-muted);
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.4rem;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .aside-link {
-    display: block;
-    font-size: 14px;
-    color: var(--ink-soft);
-    padding: 0.3rem 0;
-    cursor: pointer;
-    border-left: 2px solid transparent;
-    padding-left: 0.5rem;
-    transition: all 0.15s;
-    font-family: var(--body);
-    text-decoration: none;
-  }
-
-  .aside-link:hover, .aside-link.active {
-    color: var(--ink);
-    border-left-color: var(--ink);
-  }
-
-  .char-toggle {
-    display: flex;
-    gap: 0;
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    overflow: hidden;
-    margin-bottom: 1rem;
-  }
-
-  .char-btn {
-    flex: 1;
-    padding: 0.4rem;
-    font-family: var(--serif);
-    font-size: 13px;
-    font-style: italic;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: var(--ink-muted);
-  }
-
-  .char-btn.active-v { background: var(--accent-v); color: #fff; }
-  .char-btn.active-c { background: var(--accent-c); color: #fff; }
-
-  .stat-mini {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 0.4rem;
-    font-size: 13px;
-  }
-  .stat-mini .val { font-family: var(--mono); font-size: 15px; font-weight: 400; }
-  .val-v { color: var(--accent-v); }
-  .val-c { color: var(--accent-c); }
-
-  /* ─── MAIN CONTENT ─── */
-  main {
-    padding: 2.5rem 3rem 4rem;
-    max-width: 900px;
-  }
-
-  .section {
-    margin-bottom: 4rem;
-    display: none;
-  }
-  .section.visible { display: block; }
-
-  .section-header {
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .principle-tag {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-muted);
-    margin-bottom: 0.5rem;
-  }
-
-  h2 {
-    font-family: var(--serif);
-    font-size: 2rem;
-    font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: -0.01em;
-  }
-
-  h3 {
-    font-family: var(--serif);
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    margin-top: 2rem;
-  }
-
-  p { margin-bottom: 1rem; color: var(--ink-soft); }
-
-  .lede {
-    font-size: 1.15rem;
-    font-style: italic;
-    color: var(--ink-soft);
-    border-left: 3px solid var(--rule);
-    padding-left: 1.2rem;
-    margin: 1.5rem 0;
-    line-height: 1.6;
-  }
-
-  /* ─── COLLOCATE BUBBLES ─── */
-  .bubble-area {
-    position: relative;
-    height: 340px;
-    background: var(--parchment-dark);
-    border: 1px solid var(--rule);
-    border-radius: 4px;
-    overflow: hidden;
-    margin: 1.5rem 0;
-  }
-
-  .bubble {
-    position: absolute;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: default;
-    transition: transform 0.2s, opacity 0.2s;
-    font-family: var(--body);
-    font-style: italic;
-    transform-origin: center;
-    border: 1px solid transparent;
-  }
-
-  .bubble:hover { transform: scale(1.1); z-index: 10; }
-  .bubble span { text-align: center; pointer-events: none; line-height: 1.2; }
-
-  .bubble-v { background: rgba(139,58,58,0.12); border-color: rgba(139,58,58,0.25); color: var(--accent-v); }
-  .bubble-c { background: rgba(42,74,107,0.12); border-color: rgba(42,74,107,0.25); color: var(--accent-c); }
-
-  .bubble-legend {
-    display: flex;
-    gap: 1.5rem;
-    font-size: 13px;
-    color: var(--ink-muted);
-    font-style: italic;
-    margin-bottom: 0.5rem;
-  }
-  .bubble-legend span::before { content: '● '; }
-  .leg-v::before { color: var(--accent-v) !important; }
-  .leg-c::before { color: var(--accent-c) !important; }
-
-  /* ─── CONTEXTS ─── */
-  .context-tabs {
-    display: flex;
-    gap: 0;
-    border-bottom: 1px solid var(--rule);
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  .ctx-tab {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    color: var(--ink-muted);
-    transition: all 0.15s;
-  }
-  .ctx-tab:hover { color: var(--ink); }
-  .ctx-tab.active-v { color: var(--accent-v); border-bottom-color: var(--accent-v); }
-  .ctx-tab.active-c { color: var(--accent-c); border-bottom-color: var(--accent-c); }
-
-  .ctx-panel { display: none; }
-  .ctx-panel.visible { display: block; }
-
-  .kwic {
-    font-family: var(--body);
-    font-size: 15px;
-    line-height: 1.8;
-    padding: 0.7rem 0;
-    border-bottom: 1px solid var(--parchment-deep);
-    display: flex;
-    align-items: baseline;
-    gap: 0;
-    flex-wrap: wrap;
-  }
-  .kwic:last-child { border-bottom: none; }
-  .kwic-left { color: var(--ink-muted); text-align: right; flex: 1; min-width: 180px; padding-right: 4px; }
-  .kwic-key-v { color: var(--accent-v); font-weight: 600; font-style: italic; padding: 0 6px; white-space: nowrap; font-family: var(--serif); }
-  .kwic-key-c { color: var(--accent-c); font-weight: 600; font-style: italic; padding: 0 6px; white-space: nowrap; font-family: var(--serif); }
-  .kwic-right { color: var(--ink-muted); flex: 1; min-width: 180px; padding-left: 4px; }
-
-  /* ─── COMPARISON BARS ─── */
-  .compare-grid {
-    display: grid;
-    gap: 1.2rem;
-    margin: 1.5rem 0;
-  }
-
-  .compare-row {
-    background: var(--parchment-dark);
-    border: 1px solid var(--rule);
-    border-radius: 4px;
-    padding: 1rem 1.2rem;
-  }
-
-  .compare-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-muted);
-    margin-bottom: 0.8rem;
-  }
-
-  .compare-bars {
-    display: grid;
-    gap: 0.5rem;
-  }
-
-  .cbar-row {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    font-size: 14px;
-  }
-
-  .cbar-name {
-    width: 60px;
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 14px;
-    flex-shrink: 0;
-  }
-
-  .cbar-track {
-    flex: 1;
-    height: 10px;
-    background: var(--parchment-deep);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .cbar-fill {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 0.8s ease;
-  }
-  .fill-v { background: var(--accent-v); }
-  .fill-c { background: var(--accent-c); }
-
-  .cbar-val {
-    font-family: var(--mono);
-    font-size: 12px;
-    width: 60px;
-    flex-shrink: 0;
-  }
-
-  .compare-note {
-    font-size: 13px;
-    font-style: italic;
-    color: var(--ink-muted);
-    margin-top: 0.8rem;
-  }
-
-  /* ─── PRINCIPLES CARDS ─── */
-  .principle-card {
-    border: 1px solid var(--rule);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 1.5rem;
-    cursor: pointer;
-    transition: border-color 0.2s;
-  }
-  .principle-card:hover { border-color: var(--ink-muted); }
-
-  .pc-header {
-    padding: 1rem 1.2rem;
-    background: var(--parchment-dark);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .pc-title {
-    font-family: var(--serif);
-    font-size: 1.1rem;
-    font-weight: 600;
-  }
-
-  .pc-toggle {
-    font-family: var(--mono);
+    font-family: 'Libre Baskerville', Georgia, serif;
     font-size: 16px;
-    color: var(--ink-muted);
-    transition: transform 0.2s;
-  }
-  .principle-card.open .pc-toggle { transform: rotate(45deg); }
-
-  .pc-body {
-    display: none;
-    padding: 1.2rem;
-  }
-  .principle-card.open .pc-body { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-
-  .pc-char {
-    background: var(--parchment-dark);
-    border-radius: 3px;
-    padding: 0.8rem 1rem;
-    font-size: 14px;
-    line-height: 1.6;
-  }
-  .pc-char-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 0.4rem;
-  }
-  .pc-char-label-v { color: var(--accent-v); }
-  .pc-char-label-c { color: var(--accent-c); }
-
-  .pc-insight {
-    grid-column: 1 / -1;
-    background: var(--parchment-deep);
-    border-left: 3px solid var(--ink-muted);
-    padding: 0.8rem 1rem;
-    font-size: 14px;
-    font-style: italic;
-    line-height: 1.6;
-    color: var(--ink-soft);
+    line-height: 1.7;
+    overflow-x: hidden;
   }
 
-  /* ─── OVERVIEW ─── */
-  .overview-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin: 1.5rem 0;
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--ink);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 3rem; height: 56px;
+  }
+  .nav-title {
+    font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--warm-mid);
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .15em;
+    text-transform: uppercase; color: var(--warm-mid); text-decoration: none;
+    opacity: .6; transition: opacity .2s;
+  }
+  .nav-links a:hover { opacity: 1; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: center; padding: 8rem 10vw 6rem;
+    background: var(--ink);
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -20%; right: -10%; width: 60vw; height: 140%;
+    background: radial-gradient(ellipse at center, #2a2420 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-kicker {
+    font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .3em;
+    text-transform: uppercase; color: var(--accent-gold); margin-bottom: 2rem;
+    opacity: 0; animation: fadeUp .8s .2s forwards;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif; font-size: clamp(3rem, 7vw, 7rem);
+    font-weight: 900; line-height: 1.0; color: var(--paper);
+    max-width: 14ch;
+    opacity: 0; animation: fadeUp .8s .4s forwards;
+  }
+  .hero h1 em { font-style: italic; color: var(--warm-mid); }
+  .hero-sub {
+    margin-top: 2.5rem; max-width: 52ch;
+    font-size: 1.05rem; line-height: 1.8; color: #a09888;
+    opacity: 0; animation: fadeUp .8s .6s forwards;
+  }
+  .hero-credits {
+    margin-top: 3rem; display: flex; gap: 3rem;
+    opacity: 0; animation: fadeUp .8s .8s forwards;
+  }
+  .hero-credit-item { }
+  .hero-credit-label {
+    font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .2em;
+    text-transform: uppercase; color: #5a5248; margin-bottom: .3rem;
+  }
+  .hero-credit-val {
+    font-family: 'DM Mono', monospace; font-size: 12px; color: var(--warm-mid);
+  }
+  .scroll-hint {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: .5rem;
+    opacity: 0; animation: fadeUp .8s 1.2s forwards;
+  }
+  .scroll-hint span {
+    font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .2em;
+    text-transform: uppercase; color: #4a4540;
+  }
+  .scroll-line {
+    width: 1px; height: 40px; background: linear-gradient(to bottom, #4a4540, transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
   }
 
-  .char-card {
-    border: 1px solid var(--rule);
-    border-radius: 4px;
-    overflow: hidden;
+  /* ── SECTION SCAFFOLDING ── */
+  section { padding: 7rem 0; position: relative; }
+  .section-inner { max-width: 1200px; margin: 0 auto; padding: 0 5vw; }
+
+  .section-kicker {
+    font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .3em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .section-kicker::after {
+    content: ''; flex: 1; height: 1px; background: var(--rule);
+  }
+  .section-h2 {
+    font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 700; line-height: 1.15; margin-bottom: 1.5rem;
+  }
+  .section-intro {
+    max-width: 65ch; font-size: .95rem; color: var(--text-muted);
+    line-height: 1.8; margin-bottom: 3.5rem;
   }
 
-  .char-card-header {
-    padding: 0.8rem 1.2rem;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
+  /* ── RULE DIVIDER ── */
+  .rule { width: 100%; height: 1px; background: var(--rule); margin: 3rem 0; }
+  .rule-ornament {
+    text-align: center; color: var(--warm-mid); font-size: 1.2rem;
+    margin: -0.7rem 0; position: relative; z-index: 1;
   }
-  .char-card-header-v { background: rgba(139,58,58,0.08); border-bottom: 1px solid rgba(139,58,58,0.2); }
-  .char-card-header-c { background: rgba(42,74,107,0.08); border-bottom: 1px solid rgba(42,74,107,0.2); }
+  .rule-ornament::before, .rule-ornament::after {
+    content: ''; position: absolute; top: 50%; width: 45%; height: 1px;
+    background: var(--rule);
+  }
+  .rule-ornament::before { right: 52%; }
+  .rule-ornament::after { left: 52%; }
 
+  /* ── ALTERNATING SECTION BACKGROUNDS ── */
+  .bg-cream { background: var(--cream); }
+  .bg-ink { background: var(--ink); color: var(--paper); }
+  .bg-ink .section-h2 { color: var(--paper); }
+  .bg-ink .section-intro { color: #9a9080; }
+  .bg-ink .section-kicker { color: #7a7060; }
+  .bg-ink .section-kicker::after { background: #3a3530; }
+  .bg-ink .rule { background: #3a3530; }
+
+  /* ── CHARACTER HEADERS ── */
+  .char-pair {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    border: 1px solid var(--rule); margin-bottom: 3rem;
+  }
+  .char-half {
+    padding: 2rem 2.5rem; border-right: 1px solid var(--rule);
+    position: relative;
+  }
+  .char-half:last-child { border-right: none; }
   .char-name {
-    font-family: var(--serif);
-    font-size: 1.4rem;
-    font-style: italic;
-    font-weight: 600;
+    font-family: 'Playfair Display', serif; font-size: 2.2rem;
+    font-weight: 900; font-style: italic; line-height: 1;
+    margin-bottom: .4rem;
   }
-  .char-name-v { color: var(--accent-v); }
-  .char-name-c { color: var(--accent-c); }
-
   .char-freq {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--ink-muted);
+    font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--text-muted);
+  }
+  .char-freq strong { font-size: 1.4rem; font-weight: 400; }
+
+  .grace-col .char-name { color: var(--accent-g); }
+  .stephen-col .char-name { color: var(--accent-s); }
+  .vivika-col .char-name { color: var(--accent-v); }
+  .cassius-col .char-name { color: var(--accent-c); }
+
+  /* ── DATA CARDS ── */
+  .data-grid { display: grid; gap: 2rem; }
+  .data-grid-2 { grid-template-columns: 1fr 1fr; }
+  .data-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .data-grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+  .data-card {
+    background: #fff; border: 1px solid var(--rule);
+    padding: 1.75rem; position: relative;
+  }
+  .bg-ink .data-card { background: #24201c; border-color: #3a3530; }
+  .bg-cream .data-card { background: var(--paper); }
+
+  .data-card-label {
+    font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.2rem;
   }
 
-  .char-card-body {
-    padding: 1rem 1.2rem;
-    font-size: 14px;
-    line-height: 1.7;
-    background: var(--parchment-dark);
+  /* ── BAR CHARTS ── */
+  .bar-list { display: flex; flex-direction: column; gap: .55rem; }
+  .bar-row { display: flex; align-items: center; gap: .75rem; }
+  .bar-term {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    min-width: 90px; color: var(--text-muted); flex-shrink: 0;
+  }
+  .bar-track {
+    flex: 1; height: 6px; background: var(--cream);
+    position: relative; overflow: hidden;
+  }
+  .bg-ink .bar-track { background: #3a3530; }
+  .bar-fill {
+    height: 100%; position: absolute; left: 0; top: 0;
+    transform-origin: left;
+    transition: transform .8s cubic-bezier(.16,1,.3,1);
+  }
+  .bar-count {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    min-width: 24px; text-align: right; color: var(--text-muted);
   }
 
-  .stat-line {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.25rem 0;
-    border-bottom: 1px solid var(--parchment-deep);
-    font-size: 14px;
-  }
-  .stat-line:last-child { border-bottom: none; }
-  .stat-line .val { font-family: var(--mono); }
+  .fill-grace { background: var(--accent-g); }
+  .fill-stephen { background: var(--accent-s); }
+  .fill-vivika { background: var(--accent-v); }
+  .fill-cassius { background: var(--accent-c); }
+  .fill-gold { background: var(--accent-gold); }
+  .fill-red { background: var(--accent-red); }
 
-  /* ─── NETWORK VIS ─── */
-  #network-canvas {
-    width: 100%;
-    height: 360px;
-    background: var(--parchment-dark);
-    border: 1px solid var(--rule);
-    border-radius: 4px;
-    display: block;
+  /* ── AGENCY CHART ── */
+  .agency-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .agency-block { }
+  .agency-char {
+    font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .15em;
+    text-transform: uppercase; margin-bottom: 1rem; padding-bottom: .5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .agency-row { display: flex; align-items: center; gap: .75rem; margin-bottom: .5rem; }
+  .agency-type {
+    font-family: 'DM Mono', monospace; font-size: 9px; min-width: 70px;
+    text-transform: uppercase; color: var(--text-muted); flex-shrink: 0;
+  }
+  .agency-bar {
+    flex: 1; height: 14px; background: var(--cream); position: relative; overflow: hidden;
+  }
+  .bg-ink .agency-bar { background: #3a3530; }
+  .agency-fill { height: 100%; position: absolute; left: 0; top: 0; }
+  .agency-count {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    min-width: 28px; text-align: right; color: var(--text-muted);
   }
 
-  /* ─── FINDING CALLOUTS ─── */
-  .finding-box {
-    background: var(--parchment-deep);
-    border: 1px solid var(--rule);
-    border-radius: 4px;
-    padding: 1.2rem 1.5rem;
+  /* ── PULL QUOTES ── */
+  .pull-quote {
+    border-left: 3px solid var(--accent-gold); padding: 1rem 0 1rem 1.5rem;
     margin: 1.5rem 0;
-    font-size: 15px;
-    line-height: 1.7;
+    font-style: italic; font-size: .95rem; color: var(--text-muted);
+    line-height: 1.6;
   }
-  .finding-box strong { font-weight: 600; color: var(--ink); }
+  .bg-ink .pull-quote { border-color: var(--accent-gold); color: #9a9080; }
 
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 800px) {
-    .page-grid { grid-template-columns: 1fr; }
-    aside { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--rule); }
-    main { padding: 1.5rem; }
-    header { padding: 2rem 1.5rem 1.5rem; }
-    .overview-grid, .principle-card.open .pc-body { grid-template-columns: 1fr; }
+  /* ── ANALYSIS BOXES ── */
+  .analysis-box {
+    background: var(--ink); color: var(--paper);
+    padding: 2rem 2.5rem; margin: 2rem 0;
+  }
+  .bg-ink .analysis-box { background: #2e2924; border: 1px solid #3a3530; }
+  .analysis-box p { font-size: .9rem; line-height: 1.8; color: #b0a898; }
+  .analysis-box strong { color: var(--paper); font-weight: 700; }
+
+  .warning-box {
+    border: 1px solid var(--accent-red); padding: 1.5rem 2rem; margin: 1.5rem 0;
+  }
+  .warning-box p { font-size: .9rem; line-height: 1.8; color: var(--text-muted); }
+  .warning-box strong { color: var(--accent-red); }
+
+  .info-box {
+    border: 1px solid var(--accent-g); padding: 1.5rem 2rem; margin: 1.5rem 0;
+  }
+  .info-box p { font-size: .9rem; line-height: 1.8; color: var(--text-muted); }
+  .bg-ink .info-box { border-color: #2d6a4f; }
+  .bg-ink .info-box p { color: #9a9080; }
+
+  /* ── TAGS ── */
+  .tag-row { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.2rem; }
+  .tag {
+    font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .12em;
+    text-transform: uppercase; padding: .25rem .7rem;
+    border: 1px solid; display: inline-block;
+  }
+  .tag-power { color: var(--accent-s); border-color: var(--accent-s); }
+  .tag-binary { color: var(--accent-g); border-color: var(--accent-g); }
+  .tag-embody { color: var(--accent-v); border-color: var(--accent-v); }
+  .tag-labor { color: var(--accent-c); border-color: var(--accent-c); }
+  .tag-context { color: var(--accent-gold); border-color: var(--accent-gold); }
+  .tag-plural { color: var(--accent-red); border-color: var(--accent-red); }
+
+  /* ── BIG NUMBER STATS ── */
+  .stat-row { display: flex; gap: 3rem; flex-wrap: wrap; margin: 2rem 0; }
+  .stat-item { }
+  .stat-num {
+    font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 900;
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--text-muted); margin-top: .3rem;
+  }
+
+  /* ── COMPARISON TABLE ── */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  .compare-table th {
+    font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .15em;
+    text-transform: uppercase; padding: .75rem 1rem; text-align: left;
+    border-bottom: 2px solid var(--rule);
+  }
+  .compare-table td {
+    padding: .75rem 1rem; border-bottom: 1px solid var(--rule);
+    vertical-align: top; line-height: 1.5;
+  }
+  .bg-ink .compare-table th { border-color: #3a3530; color: #9a9080; }
+  .bg-ink .compare-table td { border-color: #3a3530; }
+  .compare-table td:first-child { color: var(--text-muted); font-style: italic; }
+  .check { color: var(--accent-g); font-weight: 700; }
+  .cross { color: var(--accent-red); font-weight: 700; }
+  .partial { color: var(--accent-gold); font-weight: 700; }
+
+  /* ── COLONIAL MAP ── */
+  .colonial-spectrum {
+    display: flex; align-items: stretch; min-height: 120px;
+    border: 1px solid var(--rule); margin: 2rem 0; overflow: hidden;
+  }
+  .col-segment {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 1.5rem; transition: flex .5s ease;
+  }
+  .col-seg-label {
+    font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .15em;
+    text-transform: uppercase; margin-bottom: .4rem;
+  }
+  .col-seg-desc { font-size: .8rem; line-height: 1.5; }
+
+  /* ── FOOTNOTE ── */
+  .footnote {
+    font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-muted);
+    line-height: 1.7; margin-top: 4rem; padding-top: 2rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* ── INTERSECT DIAGRAM ── */
+  .intersect-wrap {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;
+    margin: 2rem 0;
+  }
+  .intersect-col { }
+  .intersect-axis {
+    font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .2em;
+    text-transform: uppercase; margin-bottom: .8rem;
+  }
+  .intersect-item {
+    display: flex; gap: 1rem; padding: .6rem 0;
+    border-bottom: 1px solid var(--rule); align-items: baseline;
+  }
+  .intersect-dot {
+    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+    margin-top: .45rem;
+  }
+  .intersect-text { font-size: .85rem; line-height: 1.5; color: var(--text-muted); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: .3; } 50% { opacity: 1; }
+  }
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 0 1.5rem; }
+    .nav-links { display: none; }
+    .hero { padding: 7rem 1.5rem 5rem; }
+    .section-inner { padding: 0 1.5rem; }
+    .data-grid-2, .data-grid-3, .data-grid-4 { grid-template-columns: 1fr; }
+    .agency-grid { grid-template-columns: 1fr; }
+    .char-pair { grid-template-columns: 1fr; }
+    .char-half { border-right: none; border-bottom: 1px solid var(--rule); }
+    .intersect-wrap { grid-template-columns: 1fr; }
+    .stat-row { gap: 1.5rem; }
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="journal-label">Feminist Data Visualization · Voyant Tools Analysis · Novel Corpus</div>
-  <h1>A Feminist Reading of <em>the Data</em></h1>
-  <p class="subtitle">Applying D'Ignazio & Klein's six principles to the collocate networks of Vivika and Cassius</p>
-  <nav class="nav-pills">
-    <a class="nav-pill active" onclick="showSection('overview')">Overview</a>
-    <a class="nav-pill" onclick="showSection('collocates')">Collocate networks</a>
-    <a class="nav-pill" onclick="showSection('contexts')">Contexts</a>
-    <a class="nav-pill" onclick="showSection('comparison')">Comparison</a>
-    <a class="nav-pill" onclick="showSection('principles')">Six principles</a>
-  </nav>
+<!-- NAV -->
+<nav>
+  <span class="nav-title">Reading Power Through Data</span>
+  <ul class="nav-links">
+    <li><a href="#paladin">Paladin's Grace</a></li>
+    <li><a href="#manuscript">Manuscript</a></li>
+    <li><a href="#comparison">Comparison</a></li>
+    <li><a href="#colonial">Colonial</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <p class="hero-kicker">A feminist data reading · Voyant Tools + D'Ignazio & Klein</p>
+  <h1>Reading <em>Power</em> Through Data</h1>
+  <p class="hero-sub">
+    A corpus-based feminist analysis of four protagonists across two manuscripts,
+    applying D'Ignazio & Klein's six principles of feminist data visualization
+    to expose how gender, class, and colonial power operate in the language of fiction.
+  </p>
+  <div class="hero-credits">
+    <div class="hero-credit-item">
+      <div class="hero-credit-label">Texts</div>
+      <div class="hero-credit-val">Paladin's Grace · Manuscript</div>
+    </div>
+    <div class="hero-credit-item">
+      <div class="hero-credit-label">Method</div>
+      <div class="hero-credit-val">Voyant Tools · KWIC · Collocates</div>
+    </div>
+    <div class="hero-credit-item">
+      <div class="hero-credit-label">Framework</div>
+      <div class="hero-credit-val">D'Ignazio & Klein 2016</div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
 </header>
 
-<div class="page-grid">
+<!-- ══════════════════════════════════════════
+     SECTION 1: PALADIN'S GRACE
+══════════════════════════════════════════ -->
+<section id="paladin" class="bg-cream">
+  <div class="section-inner">
+    <p class="section-kicker reveal">Section I</p>
+    <h2 class="section-h2 reveal">Paladin's Grace<br><em style="font-size:.65em;color:var(--text-muted)">T. Kingfisher, 2020</em></h2>
+    <p class="section-intro reveal">Grace and Stephen appear in near-identical frequencies across the corpus — a surface parity that conceals meaningful asymmetries in how each character is vocabularized, addressed, and positioned within narrative power structures.</p>
 
-  <aside>
-    <div class="aside-section">
-      <div class="aside-label">Characters</div>
-      <div class="char-toggle">
-        <button class="char-btn active-v" id="btn-vivika" onclick="setChar('vivika')">Vivika</button>
-        <button class="char-btn" id="btn-cassius" onclick="setChar('cassius')">Cassius</button>
+    <!-- Char pair header -->
+    <div class="char-pair reveal">
+      <div class="char-half grace-col">
+        <div class="char-name">Grace</div>
+        <div class="char-freq"><strong>786</strong> &thinsp; occurrences</div>
+        <div style="margin-top:.6rem;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);">Master Perfumer · Anuket City</div>
       </div>
-      <div id="aside-stats"></div>
-    </div>
-    <div class="aside-section">
-      <div class="aside-label">Sections</div>
-      <a class="aside-link active" onclick="showSection('overview')">Overview</a>
-      <a class="aside-link" onclick="showSection('collocates')">Collocate networks</a>
-      <a class="aside-link" onclick="showSection('contexts')">Contexts browser</a>
-      <a class="aside-link" onclick="showSection('comparison')">Side-by-side comparison</a>
-      <a class="aside-link" onclick="showSection('principles')">Six principles</a>
-    </div>
-    <div class="aside-section">
-      <div class="aside-label">Key finding</div>
-      <p style="font-size:13px;font-style:italic;color:var(--ink-muted);line-height:1.6;">Both characters restrict affect — but under different regimes. She restrains externally; he performs composure as labour.</p>
-    </div>
-  </aside>
-
-  <main>
-
-    <!-- OVERVIEW -->
-    <div class="section visible" id="section-overview">
-      <div class="section-header">
-        <div class="principle-tag">Corpus overview</div>
-        <h2>Two characters, two data portraits</h2>
+      <div class="char-half stephen-col">
+        <div class="char-name">Stephen</div>
+        <div class="char-freq"><strong>789</strong> &thinsp; occurrences</div>
+        <div style="margin-top:.6rem;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);">Paladin · Temple of the White Rat</div>
       </div>
-      <p class="lede">Vivika and Cassius are the two most frequent proper nouns in the corpus. Reading their collocate networks through D'Ignazio & Klein's feminist framework surfaces structures of power, affect, and labor that close reading alone might miss.</p>
+    </div>
 
-      <div class="overview-grid">
-        <div class="char-card">
-          <div class="char-card-header char-card-header-v">
-            <div class="char-name char-name-v">Vivika</div>
-            <div class="char-freq">459 occurrences</div>
-          </div>
-          <div class="char-card-body">
-            <div class="stat-line"><span>Grammatical subject</span><span class="val val-v">27.4%</span></div>
-            <div class="stat-line"><span>Grammatical object</span><span class="val val-v">138 contexts</span></div>
-            <div class="stat-line"><span>Affect collocates</span><span class="val val-v">60 tokens</span></div>
-            <div class="stat-line"><span>Restraint contexts</span><span class="val val-v">40</span></div>
-            <div class="stat-line"><span>Top collocate</span><span class="val val-v">cassius (39)</span></div>
-            <div class="stat-line"><span>Dominant mode</span><span class="val" style="font-size:12px;font-style:italic;">Feel — but suppress</span></div>
-          </div>
-        </div>
-        <div class="char-card">
-          <div class="char-card-header char-card-header-c">
-            <div class="char-name char-name-c">Cassius</div>
-            <div class="char-freq">437 occurrences</div>
-          </div>
-          <div class="char-card-body">
-            <div class="stat-line"><span>Grammatical subject</span><span class="val val-c">38.7%</span></div>
-            <div class="stat-line"><span>Grammatical object</span><span class="val val-c">~0 contexts</span></div>
-            <div class="stat-line"><span>Affect collocates</span><span class="val val-c">36 tokens</span></div>
-            <div class="stat-line"><span>Restraint contexts</span><span class="val val-c">17</span></div>
-            <div class="stat-line"><span>Top collocate</span><span class="val val-c">vivika (38)</span></div>
-            <div class="stat-line"><span>Dominant mode</span><span class="val" style="font-size:12px;font-style:italic;">Act — and perform</span></div>
-          </div>
+    <!-- Principle 1: Binaries — Collocates -->
+    <div class="rule-ornament reveal">◆</div>
+    <div class="rule reveal"></div>
+    <p class="section-kicker reveal">Principle I · Rethink Binaries</p>
+    <h3 class="reveal" style="font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:1rem;">Collocate Networks</h3>
+    <p class="reveal" style="max-width:65ch;font-size:.9rem;color:var(--text-muted);margin-bottom:2rem;">The words that cluster most densely around each character reveal the world they inhabit. Grace's network is relational and professional; Stephen's extends into institutional hierarchies.</p>
+
+    <div class="data-grid data-grid-2 reveal">
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-g);">Grace — nearest words</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">stephen</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:100%"></div></div><span class="bar-count">54</span></div>
+          <div class="bar-row"><span class="bar-term">marguerite</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:72%"></div></div><span class="bar-count">39</span></div>
+          <div class="bar-row"><span class="bar-term">head</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:65%"></div></div><span class="bar-count">35</span></div>
+          <div class="bar-row"><span class="bar-term">felt / sighed</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:61%"></div></div><span class="bar-count">33</span></div>
+          <div class="bar-row"><span class="bar-term">perfumer</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:19%"></div></div><span class="bar-count">10</span></div>
         </div>
       </div>
-
-      <div class="finding-box">
-        <strong>The structural finding:</strong> The subject/object asymmetry (38.7% vs 27.4%) and the affect gap (60 vs 36 tokens) together suggest a classical masculine/feminine construction — he does, she feels. But the feminist reading complicates this. Vivika's data shows a rich interior life that is actively suppressed. Cassius's shows sparse but significant breaks in a performed composure. Neither is simply what the surface reading suggests.
-      </div>
-
-      <canvas id="network-canvas"></canvas>
-      <p style="font-size:13px;font-style:italic;color:var(--ink-muted);margin-top:0.5rem;">Collocate strength between Vivika (red) and Cassius (blue) — line weight encodes co-occurrence frequency. Hover to inspect.</p>
-    </div>
-
-    <!-- COLLOCATES -->
-    <div class="section" id="section-collocates">
-      <div class="section-header">
-        <div class="principle-tag">Collocate networks</div>
-        <h2>What clusters around each character</h2>
-      </div>
-      <p>The top 25 words appearing within a 5-word window of each character's name. Size encodes frequency.</p>
-
-      <div class="bubble-legend" id="bubble-legend-vivika">
-        <span class="leg-v">Vivika's collocates</span>
-        <span style="font-size:12px;color:var(--ink-muted);font-style:italic;">Circle size = frequency</span>
-      </div>
-      <div class="bubble-legend" id="bubble-legend-cassius" style="display:none">
-        <span class="leg-c">Cassius's collocates</span>
-        <span style="font-size:12px;color:var(--ink-muted);font-style:italic;">Circle size = frequency</span>
-      </div>
-
-      <div class="bubble-area" id="bubble-container"></div>
-
-      <div style="display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap;">
-        <button class="ctx-tab active-v" id="bubble-tab-v" onclick="renderBubbles('vivika')">Vivika's network</button>
-        <button class="ctx-tab" id="bubble-tab-c" onclick="renderBubbles('cassius')">Cassius's network</button>
-      </div>
-
-      <div class="finding-box" style="margin-top:1.5rem;">
-        <strong>Vivika's cluster</strong> is dominated by proper names (Cassius, Ulma, Janus, Father) and embodied verbs (looked, turned, took). <strong>Cassius's cluster</strong> is dominated by speech acts (said ×26) and knowledge verbs (knew, know, thought) — he speaks and knows more than he feels, in the data's register.
-      </div>
-    </div>
-
-    <!-- CONTEXTS -->
-    <div class="section" id="section-contexts">
-      <div class="section-header">
-        <div class="principle-tag">Contexts browser</div>
-        <h2>The character in their sentences</h2>
-      </div>
-      <p>KWIC (keyword-in-context) views, filtered by thematic category. The keyword sits at the centre; left and right context extends 55 characters each way.</p>
-
-      <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center;">
-        <button class="ctx-tab active-v" id="ctx-char-v" onclick="setContextChar('vivika')">Vivika</button>
-        <button class="ctx-tab" id="ctx-char-c" onclick="setContextChar('cassius')">Cassius</button>
-      </div>
-
-      <div class="context-tabs" id="ctx-tabs"></div>
-      <div id="ctx-panels"></div>
-    </div>
-
-    <!-- COMPARISON -->
-    <div class="section" id="section-comparison">
-      <div class="section-header">
-        <div class="principle-tag">Side-by-side comparison</div>
-        <h2>Vivika and Cassius, measured</h2>
-      </div>
-      <p>Direct comparisons across key feminist data metrics. The bars show relative values — hover for exact figures.</p>
-
-      <div class="compare-grid" id="compare-grid"></div>
-
-      <h3>The affect gap in detail</h3>
-      <p>Vivika's affect vocabulary is both richer <em>and</em> more suppressed. The words cluster around bodily restraint — whispered, swallowed, gulped, biting her lip. Cassius's affect words are sparser but include rare, structurally significant exposures.</p>
-
-      <div class="overview-grid">
-        <div>
-          <div class="aside-label" style="color:var(--accent-v);border-bottom-color:rgba(139,58,58,0.3);margin-bottom:0.8rem;">Vivika's affect words</div>
-          <div id="vivika-affect-tags"></div>
-        </div>
-        <div>
-          <div class="aside-label" style="color:var(--accent-c);border-bottom-color:rgba(42,74,107,0.3);margin-bottom:0.8rem;">Cassius's affect words</div>
-          <div id="cassius-affect-tags"></div>
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-s);">Stephen — nearest words</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">grace</span><div class="bar-track"><div class="bar-fill fill-stephen" style="width:100%"></div></div><span class="bar-count">55</span></div>
+          <div class="bar-row"><span class="bar-term">marguerite</span><div class="bar-track"><div class="bar-fill fill-stephen" style="width:58%"></div></div><span class="bar-count">32</span></div>
+          <div class="bar-row"><span class="bar-term">head</span><div class="bar-track"><div class="bar-fill fill-stephen" style="width:51%"></div></div><span class="bar-count">28</span></div>
+          <div class="bar-row"><span class="bar-term">istvhan</span><div class="bar-track"><div class="bar-fill fill-stephen" style="width:33%"></div></div><span class="bar-count">18</span></div>
+          <div class="bar-row"><span class="bar-term">bishop</span><div class="bar-track"><div class="bar-fill fill-stephen" style="width:22%"></div></div><span class="bar-count">12</span></div>
         </div>
       </div>
+    </div>
 
-      <div class="finding-box" style="margin-top:1.5rem;">
-        <strong>The confession that didn't happen:</strong> The word <em>confessed</em> appears exactly once in Cassius's 437 contexts — as a conditional clause: "What would Sabine think if Cassius <em>confessed</em> that's how he saw her?" He imagines disclosure and withholds it. The data structure enacts the emotional structure.
+    <div class="analysis-box reveal">
+      <p>Grace's collocate network is <strong>relational and domestic</strong> — Stephen, Marguerite, felt, sighed. Stephen's extends into <strong>institutional hierarchies</strong>: Istvhan (his paladin brother) and Bishop appear near him but not near Grace. The data encodes a gendered division: Grace's world is interpersonal; Stephen's includes institutional power.</p>
+    </div>
+    <div class="tag-row reveal">
+      <span class="tag tag-binary">Rethink Binaries</span>
+      <span class="tag tag-plural">Embrace Pluralism</span>
+    </div>
+
+    <!-- Principle 2: Agency -->
+    <div class="rule reveal" style="margin-top:3rem;"></div>
+    <p class="section-kicker reveal">Principle II · Examine Power</p>
+    <h3 class="reveal" style="font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:1rem;">Agency by Verb Type</h3>
+    <p class="reveal" style="max-width:65ch;font-size:.9rem;color:var(--text-muted);margin-bottom:2rem;">Post-name verb analysis categorizes what each character does immediately after being named — the most direct measure of narrative agency.</p>
+
+    <div class="agency-grid reveal">
+      <div class="agency-block">
+        <div class="agency-char" style="color:var(--accent-g);">Grace</div>
+        <div class="agency-row"><span class="agency-type">Physical</span><div class="agency-bar"><div class="agency-fill fill-grace" style="width:100%"></div></div><span class="agency-count">91</span></div>
+        <div class="agency-row"><span class="agency-type">Emotional</span><div class="agency-bar"><div class="agency-fill fill-gold" style="width:37%"></div></div><span class="agency-count">34</span></div>
+        <div class="agency-row"><span class="agency-type">Cognitive</span><div class="agency-bar"><div class="agency-fill fill-cassius" style="width:34%"></div></div><span class="agency-count">31</span></div>
+        <div class="agency-row"><span class="agency-type">Speech</span><div class="agency-bar"><div class="agency-fill fill-red" style="width:15%"></div></div><span class="agency-count">14</span></div>
+      </div>
+      <div class="agency-block">
+        <div class="agency-char" style="color:var(--accent-s);">Stephen</div>
+        <div class="agency-row"><span class="agency-type">Physical</span><div class="agency-bar"><div class="agency-fill fill-stephen" style="width:91%"></div></div><span class="agency-count">83</span></div>
+        <div class="agency-row"><span class="agency-type">Cognitive</span><div class="agency-bar"><div class="agency-fill fill-cassius" style="width:38%"></div></div><span class="agency-count">35</span></div>
+        <div class="agency-row"><span class="agency-type">Emotional</span><div class="agency-bar"><div class="agency-fill fill-gold" style="width:30%"></div></div><span class="agency-count">27</span></div>
+        <div class="agency-row"><span class="agency-type">Speech</span><div class="agency-bar"><div class="agency-fill fill-red" style="width:13%"></div></div><span class="agency-count">12</span></div>
       </div>
     </div>
 
-    <!-- PRINCIPLES -->
-    <div class="section" id="section-principles">
-      <div class="section-header">
-        <div class="principle-tag">D'Ignazio & Klein, 2016</div>
-        <h2>The six principles, applied</h2>
-      </div>
-      <p>D'Ignazio & Klein propose six principles for feminist data visualization. Each is applied below to what the corpus data reveals about these two characters. Click to expand.</p>
-      <div id="principles-list"></div>
+    <div class="analysis-box reveal">
+      <p>Grace registers <strong>more emotional verbs</strong> (34 vs 27) while Stephen registers <strong>more cognitive verbs</strong> (35 vs 31) — a soft reproduction of the reason/emotion binary that feminist theory identifies as a fundamental tool for subordinating women, even in a novel that clearly intends to celebrate its heroine.</p>
     </div>
 
-  </main>
-</div>
+    <!-- Principle 3: Embodiment -->
+    <div class="rule reveal" style="margin-top:3rem;"></div>
+    <p class="section-kicker reveal">Principle III · Legitimize Embodiment</p>
+    <h3 class="reveal" style="font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:1rem;">Body-Word Collocates & Olfactory Expertise</h3>
+
+    <div class="data-grid data-grid-2 reveal">
+      <div class="data-card">
+        <div class="data-card-label">Body vocabulary in context window</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">head</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:100%"></div></div><span class="bar-count">37g / 34s</span></div>
+          <div class="bar-row"><span class="bar-term">eyes</span><div class="bar-track"><div class="bar-fill fill-stephen" style="width:57%"></div></div><span class="bar-count">17g / 21s</span></div>
+          <div class="bar-row"><span class="bar-term">smell ✦</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:22%"></div></div><span class="bar-count">8g / 5s</span></div>
+          <div class="bar-row"><span class="bar-term">skin / touch</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:22%"></div></div><span class="bar-count">8g / 3s</span></div>
+        </div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-label">Grace's olfactory expertise — sample contexts</div>
+        <div class="pull-quote" style="margin-top:0;">"Charbeans," said Grace absently. "They'll kill the smell…"</div>
+        <div class="pull-quote">"Do you smell that?" asked Grace, suddenly alert.</div>
+        <div class="pull-quote">"It smells amazing," Grace said, sounding rather angry about it.</div>
+      </div>
+    </div>
+
+    <div class="analysis-box reveal">
+      <p>Grace's olfactory cluster (smell: 8, nose: 2) is unique across all four protagonists. <strong>Smell is her epistemology</strong> — the novel performs D'Ignazio & Klein's principle of legitimizing embodiment by grounding Grace's cognitive authority in her body. Her nose is her instrument of knowledge.</p>
+    </div>
+    <div class="tag-row reveal">
+      <span class="tag tag-embody">Legitimize Embodiment</span>
+    </div>
+
+    <!-- Principle 4: Labor -->
+    <div class="rule reveal" style="margin-top:3rem;"></div>
+    <p class="section-kicker reveal">Principle IV · Make Labor Visible</p>
+    <h3 class="reveal" style="font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:1rem;">Claiming Professional Credit</h3>
+
+    <div class="data-grid data-grid-2 reveal">
+      <div class="data-card">
+        <div class="data-card-label">Grace's labor markers</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">master/perfumer</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:100%"></div></div><span class="bar-count">12</span></div>
+          <div class="bar-row"><span class="bar-term">shop / work</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:67%"></div></div><span class="bar-count">8</span></div>
+          <div class="bar-row"><span class="bar-term">skill terms</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:42%"></div></div><span class="bar-count">5</span></div>
+          <div class="bar-row"><span class="bar-term">"assistant" ⚠</span><div class="bar-track"><div class="bar-fill fill-red" style="width:8%"></div></div><span class="bar-count">contested</span></div>
+        </div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-label">The labor struggle in context</div>
+        <div class="pull-quote" style="margin-top:0;">"Business partner," protested Grace. "Of course, of course," he replied.</div>
+        <div class="pull-quote">"I'm a damn good perfumer," said Grace. In this, at least, she…</div>
+        <div class="pull-quote">"I can't leave my shop," said Grace. "This is what I do…"</div>
+      </div>
+    </div>
+
+    <div class="warning-box reveal">
+      <p><strong>Pattern:</strong> Grace's labor is acknowledged in formal announcements ("master perfumer") but minimized in conversational register — she is called "assistant" rather than "business partner." Her insistence on claiming her own title performs exactly what D'Ignazio & Klein call making labor visible. Her expertise drives the plot, yet the data shows it is constantly undervalued by other characters.</p>
+    </div>
+    <div class="tag-row reveal">
+      <span class="tag tag-labor">Make Labor Visible</span>
+      <span class="tag tag-power">Examine Power</span>
+    </div>
+
+    <!-- Principle 5: Title / address -->
+    <div class="rule reveal" style="margin-top:3rem;"></div>
+    <p class="section-kicker reveal">Principle V · Consider Context</p>
+    <h3 class="reveal" style="font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:1rem;">How Characters Are Named</h3>
+
+    <div class="data-grid data-grid-2 reveal">
+      <div class="data-card">
+        <div class="data-card-label">Institutional address</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">said → Grace</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:100%"></div></div><span class="bar-count">125</span></div>
+          <div class="bar-row"><span class="bar-term">asked → Grace</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:22%"></div></div><span class="bar-count">27</span></div>
+          <div class="bar-row"><span class="bar-term">said → Stephen</span><div class="bar-track"><div class="bar-fill fill-stephen" style="width:94%"></div></div><span class="bar-count">117</span></div>
+          <div class="bar-row"><span class="bar-term">"Paladin" → Stephen ✦</span><div class="bar-track"><div class="bar-fill fill-red" style="width:7%"></div></div><span class="bar-count">9</span></div>
+        </div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-label">What this means</div>
+        <p style="font-size:.85rem;line-height:1.7;color:var(--text-muted);">Stephen is addressed with his institutional title "Paladin" nine times — a form of address carrying religious and military authority. No one calls Grace "Master Perfumer" in direct address. Power is distributed not just in what characters <em>do</em>, but in how others <em>name</em> them.</p>
+      </div>
+    </div>
+    <div class="tag-row reveal">
+      <span class="tag tag-context">Consider Context</span>
+      <span class="tag tag-power">Examine Power</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 2: MANUSCRIPT
+══════════════════════════════════════════ -->
+<section id="manuscript" class="bg-ink">
+  <div class="section-inner">
+    <p class="section-kicker reveal">Section II</p>
+    <h2 class="section-h2 reveal" style="color:var(--paper);">The Manuscript<br><em style="font-size:.65em;color:#7a7060">Vivika &amp; Cassius</em></h2>
+    <p class="section-intro reveal">Set in an explicitly colonial world divided between Helian and Arkonian peoples, the manuscript places its protagonists in genuine structural tension with power — while reproducing some of the gendered asymmetries it otherwise challenges.</p>
+
+    <div class="char-pair reveal" style="border-color:#3a3530;">
+      <div class="char-half vivika-col" style="border-color:#3a3530;background:#1e1b18;">
+        <div class="char-name">Vivika</div>
+        <div class="char-freq" style="color:#7a7060;"><strong style="color:var(--accent-v);">459</strong> &thinsp; occurrences</div>
+        <div style="margin-top:.6rem;font-family:'DM Mono',monospace;font-size:10px;color:#5a5248;">Translator · Outlander · Arkonian</div>
+      </div>
+      <div class="char-half cassius-col" style="border-color:#3a3530;background:#1e1b18;">
+        <div class="char-name">Cassius</div>
+        <div class="char-freq" style="color:#7a7060;"><strong style="color:var(--accent-c);">437</strong> &thinsp; occurrences</div>
+        <div style="margin-top:.6rem;font-family:'DM Mono',monospace;font-size:10px;color:#5a5248;">Helian speaker · Class-fallen · Liminal</div>
+      </div>
+    </div>
+
+    <!-- Collocates -->
+    <div class="rule reveal" style="background:#3a3530;"></div>
+    <p class="section-kicker reveal">Principle I · Rethink Binaries</p>
+    <h3 class="reveal" style="font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:1rem;color:var(--paper);">The Father Problem</h3>
+
+    <div class="data-grid data-grid-2 reveal">
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-v);">Vivika — nearest words</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">cassius</span><div class="bar-track"><div class="bar-fill fill-vivika" style="width:100%"></div></div><span class="bar-count">39</span></div>
+          <div class="bar-row"><span class="bar-term">ulma</span><div class="bar-track"><div class="bar-fill fill-vivika" style="width:46%"></div></div><span class="bar-count">18</span></div>
+          <div class="bar-row"><span class="bar-term">father ⚠</span><div class="bar-track"><div class="bar-fill fill-red" style="width:44%"></div></div><span class="bar-count">17</span></div>
+          <div class="bar-row"><span class="bar-term">janus / princess</span><div class="bar-track"><div class="bar-fill fill-vivika" style="width:39%"></div></div><span class="bar-count">15 / 9</span></div>
+        </div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-c);">Cassius — nearest words</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">vivika</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:100%"></div></div><span class="bar-count">38</span></div>
+          <div class="bar-row"><span class="bar-term">sabine</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:39%"></div></div><span class="bar-count">15</span></div>
+          <div class="bar-row"><span class="bar-term">hand</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:37%"></div></div><span class="bar-count">14</span></div>
+          <div class="bar-row"><span class="bar-term">father</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:21%"></div></div><span class="bar-count">8</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="analysis-box reveal" style="background:#2e2924;border:1px solid #3a3530;">
+      <p><strong>"Father"</strong> is Vivika's third-highest collocate (17) and appears in 23 of her context windows — compared to essentially zero for Grace. Vivika's world is structured by patriarchal relation; her identity is continually anchored to her father's welfare. Where Grace is <strong>professionally independent</strong>, Vivika exists in relation to a man whose survival she must secure.</p>
+    </div>
+
+    <!-- Agency -->
+    <div class="rule reveal" style="background:#3a3530;margin-top:3rem;"></div>
+    <p class="section-kicker reveal">Principle II · Examine Power</p>
+    <h3 class="reveal" style="font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:1rem;color:var(--paper);">Agency & Voice</h3>
+
+    <div class="agency-grid reveal">
+      <div class="agency-block">
+        <div class="agency-char" style="color:var(--accent-v);">Vivika</div>
+        <div class="agency-row"><span class="agency-type">Physical</span><div class="agency-bar"><div class="agency-fill fill-vivika" style="width:100%"></div></div><span class="agency-count">57</span></div>
+        <div class="agency-row"><span class="agency-type">Speech</span><div class="agency-bar"><div class="agency-fill fill-red" style="width:44%"></div></div><span class="agency-count">25</span></div>
+        <div class="agency-row"><span class="agency-type">Emotional</span><div class="agency-bar"><div class="agency-fill fill-gold" style="width:32%"></div></div><span class="agency-count">18</span></div>
+        <div class="agency-row"><span class="agency-type">Cognitive</span><div class="agency-bar"><div class="agency-fill fill-cassius" style="width:19%"></div></div><span class="agency-count">11</span></div>
+      </div>
+      <div class="agency-block">
+        <div class="agency-char" style="color:var(--accent-c);">Cassius</div>
+        <div class="agency-row"><span class="agency-type">Physical</span><div class="agency-bar"><div class="agency-fill fill-cassius" style="width:86%"></div></div><span class="agency-count">49</span></div>
+        <div class="agency-row"><span class="agency-type">Speech</span><div class="agency-bar"><div class="agency-fill fill-red" style="width:44%"></div></div><span class="agency-count">25</span></div>
+        <div class="agency-row"><span class="agency-type">Emotional</span><div class="agency-bar"><div class="agency-fill fill-gold" style="width:23%"></div></div><span class="agency-count">13</span></div>
+        <div class="agency-row"><span class="agency-type">Cognitive</span><div class="agency-bar"><div class="agency-fill fill-cassius" style="width:16%"></div></div><span class="agency-count">9</span></div>
+      </div>
+    </div>
+
+    <!-- Speech verbs -->
+    <div class="data-grid data-grid-2 reveal" style="margin-top:2rem;">
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-v);">Vivika's speech verbs</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">said</span><div class="bar-track"><div class="bar-fill fill-vivika" style="width:100%"></div></div><span class="bar-count">10</span></div>
+          <div class="bar-row"><span class="bar-term">asked</span><div class="bar-track"><div class="bar-fill fill-vivika" style="width:50%"></div></div><span class="bar-count">5</span></div>
+          <div class="bar-row"><span class="bar-term">whispered ⚠</span><div class="bar-track"><div class="bar-fill fill-red" style="width:40%"></div></div><span class="bar-count">4</span></div>
+          <div class="bar-row"><span class="bar-term">continued</span><div class="bar-track"><div class="bar-fill fill-vivika" style="width:30%"></div></div><span class="bar-count">3</span></div>
+        </div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-c);">Cassius's speech verbs</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">said</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:100%"></div></div><span class="bar-count">19</span></div>
+          <div class="bar-row"><span class="bar-term">asked</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:16%"></div></div><span class="bar-count">3</span></div>
+          <div class="bar-row"><span class="bar-term">whispered</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:5%"></div></div><span class="bar-count">1</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="warning-box reveal" style="border-color:var(--accent-red);">
+      <p><strong>Whispering as a feminist data signal:</strong> Vivika whispers 4 times — 40% of her speech-verb total — compared to Cassius's 1 time. Whispering is a speech act of suppressed or unsafe voice. D'Ignazio & Klein ask whose voices are missing or muffled: the data suggests Vivika's speech is structurally quieter than any of the other three protagonists. Grace, by contrast, speaks "flatly," "savagely," and "firmly."</p>
+    </div>
+
+    <!-- Titles -->
+    <div class="rule reveal" style="background:#3a3530;margin-top:3rem;"></div>
+    <p class="section-kicker reveal">Principle IV · Make Labor Visible</p>
+    <h3 class="reveal" style="font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:1rem;color:var(--paper);">How They Are Named</h3>
+
+    <div class="data-grid data-grid-2 reveal">
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-v);">Vivika — role words in context</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">woman</span><div class="bar-track"><div class="bar-fill fill-vivika" style="width:100%"></div></div><span class="bar-count">12</span></div>
+          <div class="bar-row"><span class="bar-term">princess (near)</span><div class="bar-track"><div class="bar-fill fill-vivika" style="width:83%"></div></div><span class="bar-count">10</span></div>
+          <div class="bar-row"><span class="bar-term">girl ⚠</span><div class="bar-track"><div class="bar-fill fill-red" style="width:42%"></div></div><span class="bar-count">5</span></div>
+          <div class="bar-row"><span class="bar-term">translator</span><div class="bar-track"><div class="bar-fill fill-vivika" style="width:8%"></div></div><span class="bar-count">1</span></div>
+        </div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-c);">Cassius — role words in context</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">man</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:100%"></div></div><span class="bar-count">17</span></div>
+          <div class="bar-row"><span class="bar-term">guard (near)</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:59%"></div></div><span class="bar-count">10</span></div>
+          <div class="bar-row"><span class="bar-term">sir / master</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:41%"></div></div><span class="bar-count">7</span></div>
+          <div class="bar-row"><span class="bar-term">boy ⚠</span><div class="bar-track"><div class="bar-fill fill-red" style="width:18%"></div></div><span class="bar-count">3</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pull-quote reveal" style="border-color:var(--accent-red);">"Girl!" He grabbed Vivika by the shoulders, pulling her…</div>
+    <div class="pull-quote reveal" style="border-color:var(--accent-gold);">"Not your master," he mumbled [Cassius rejecting the title]</div>
+
+    <div class="analysis-box reveal" style="background:#2e2924;border:1px solid #3a3530;">
+      <p>Vivika is called "girl" five times — a diminutive with no equivalent in Paladin's Grace. While Grace fights to be called "business partner" rather than "assistant," Vivika faces the more elementary struggle of being treated as an adult. Cassius is also called "boy" 3 times, suggesting the manuscript uses diminutives on both protagonists in contexts of powerlessness — partially equalizing the asymmetry, but not erasing it.</p>
+    </div>
+    <div class="tag-row reveal">
+      <span class="tag tag-labor">Make Labor Visible</span>
+      <span class="tag tag-power">Examine Power</span>
+      <span class="tag tag-embody">Legitimize Embodiment</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 3: CROSS-TEXT COMPARISON
+══════════════════════════════════════════ -->
+<section id="comparison">
+  <div class="section-inner">
+    <p class="section-kicker reveal">Section III</p>
+    <h2 class="section-h2 reveal">All Four<br><em style="font-size:.65em;color:var(--text-muted)">A comparative reading</em></h2>
+    <p class="section-intro reveal">Placing all four protagonists side by side reveals structural patterns that neither text alone makes visible. Both novels share surface-level feminist commitments; the data exposes where those commitments hold and where they slip.</p>
+
+    <!-- Frequency comparison -->
+    <div class="stat-row reveal">
+      <div class="stat-item"><div class="stat-num" style="color:var(--accent-g);">786</div><div class="stat-label">Grace</div></div>
+      <div class="stat-item"><div class="stat-num" style="color:var(--accent-s);">789</div><div class="stat-label">Stephen</div></div>
+      <div class="stat-item"><div class="stat-num" style="color:var(--accent-v);">459</div><div class="stat-label">Vivika</div></div>
+      <div class="stat-item"><div class="stat-num" style="color:var(--accent-c);">437</div><div class="stat-label">Cassius</div></div>
+    </div>
+
+    <!-- Four-way agency -->
+    <div class="rule reveal"></div>
+    <p class="section-kicker reveal">Agency Across All Four</p>
+    <div class="data-grid data-grid-4 reveal">
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-g);">Grace</div>
+        <div class="agency-row"><span class="agency-type" style="min-width:55px;">Phys</span><div class="agency-bar"><div class="agency-fill fill-grace" style="width:100%"></div></div><span class="agency-count">91</span></div>
+        <div class="agency-row"><span class="agency-type" style="min-width:55px;">Emot</span><div class="agency-bar"><div class="agency-fill fill-gold" style="width:37%"></div></div><span class="agency-count">34</span></div>
+        <div class="agency-row"><span class="agency-type" style="min-width:55px;">Cogn</span><div class="agency-bar"><div class="agency-fill fill-cassius" style="width:34%"></div></div><span class="agency-count">31</span></div>
+        <div class="agency-row"><span class="agency-type" style="min-width:55px;">Spch</span><div class="agency-bar"><div class="agency-fill fill-red" style="width:15%"></div></div><span class="agency-count">14</span></div>
+        <div style="margin-top:.8rem;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);">Total: 170</div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-s);">Stephen</div>
+        <div class="agency-row"><span class="agency-type" style="min-width:55px;">Phys</span><div class="agency-bar"><div class="agency-fill fill-stephen" style="width:91%"></div></div><span class="agency-count">83</span></div>
+        <div class="agency-row"><span class="agency-type" style="min-width:55px;">Cogn</span><div class="agency-bar"><div class="agency-fill fill-cassius" style="width:38%"></div></div><span class="agency-count">35</span></div>
+        <div class="agency-row"><span class="agency-type" style="min-width:55px;">Emot</span><div class="agency-bar"><div class="agency-fill fill-gold" style="width:30%"></div></div><span class="agency-count">27</span></div>
+        <div class="agency-row"><span class="agency-type" style="min-width:55px;">Spch</span><div class="agency-bar"><div class="agency-fill fill-red" style="width:13%"></div></div><span class="agency-count">12</span></div>
+        <div style="margin-top:.8rem;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);">Total: 157</div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-v);">Vivika</div>
+        <div class="agency-row"><span class="agency-type" style="min-width:55px;">Phys</span><div class="agency-bar"><div class="agency-fill fill-vivika" style="width:100%"></div></div><span class="agency-count">57</span></div>
+        <div class="agency-row"><span class="agency-type" style="min-width:55px;">Spch</span><div class="agency-bar"><div class="agency-fill fill-red" style="width:44%"></div></div><span class="agency-count">25</span></div>
+        <div class="agency-row"><span class="agency-type" style="min-width:55px;">Emot</span><div class="agency-bar"><div class="agency-fill fill-gold" style="width:32%"></div></div><span class="agency-count">18</span></div>
+        <div class="agency-row"><span class="agency-type" style="min-width:55px;">Cogn</span><div class="agency-bar"><div class="agency-fill fill-cassius" style="width:19%"></div></div><span class="agency-count">11</span></div>
+        <div style="margin-top:.8rem;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);">Total: 111</div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-c);">Cassius</div>
+        <div class="agency-row"><span class="agency-type" style="min-width:55px;">Phys</span><div class="agency-bar"><div class="agency-fill fill-cassius" style="width:86%"></div></div><span class="agency-count">49</span></div>
+        <div class="agency-row"><span class="agency-type" style="min-width:55px;">Spch</span><div class="agency-bar"><div class="agency-fill fill-red" style="width:44%"></div></div><span class="agency-count">25</span></div>
+        <div class="agency-row"><span class="agency-type" style="min-width:55px;">Emot</span><div class="agency-bar"><div class="agency-fill fill-gold" style="width:23%"></div></div><span class="agency-count">13</span></div>
+        <div class="agency-row"><span class="agency-type" style="min-width:55px;">Cogn</span><div class="agency-bar"><div class="agency-fill fill-cassius" style="width:16%"></div></div><span class="agency-count">9</span></div>
+        <div style="margin-top:.8rem;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);">Total: 96</div>
+      </div>
+    </div>
+    <div class="analysis-box reveal">
+      <p>Female protagonists consistently outpace male counterparts in total agency counts: <strong>Grace 170 vs Stephen 157; Vivika 111 vs Cassius 96</strong>. Both novels resist the convention of passive heroines. However, the emotion/reason binary persists in Paladin's Grace (Grace more emotional, Stephen more cognitive), while the manuscript largely avoids this — Vivika and Cassius tie on speech at 25 each. The manuscript's weakness lies not in verb type but in <strong>total volume</strong>: Vivika's 111 vs Grace's 170 reflects a heroine less thoroughly written.</p>
+    </div>
+
+    <!-- Scorecard table -->
+    <div class="rule reveal" style="margin-top:3rem;"></div>
+    <p class="section-kicker reveal">Feminist Principles — Cross-Text Scorecard</p>
+    <div class="reveal" style="overflow-x:auto;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Principle</th>
+            <th style="color:var(--accent-g);">Grace</th>
+            <th style="color:var(--accent-s);">Stephen</th>
+            <th style="color:var(--accent-v);">Vivika</th>
+            <th style="color:var(--accent-c);">Cassius</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Equal narrative presence</td><td class="check">✓ tied</td><td class="check">✓</td><td class="check">✓ close</td><td class="check">✓</td></tr>
+          <tr><td>Female labor visible & named</td><td class="check">✓ strong</td><td>—</td><td class="partial">△ partial</td><td>—</td></tr>
+          <tr><td>Avoids emotion/reason binary</td><td class="partial">△ slight gap</td><td class="partial">△</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>No infantilizing language</td><td class="check">✓ (no "girl")</td><td class="check">✓</td><td class="cross">✗ "girl" ×5</td><td class="partial">△ "boy" ×3</td></tr>
+          <tr><td>Female voice assertive</td><td class="check">✓ flatly/firmly</td><td>—</td><td class="cross">✗ whispers ×4</td><td>—</td></tr>
+          <tr><td>Independent of patriarchal rel.</td><td class="check">✓ no father</td><td>—</td><td class="cross">✗ father ×23</td><td>—</td></tr>
+          <tr><td>Embodied knowledge valorized</td><td class="check">✓ scent = expertise</td><td>—</td><td class="partial">△ voice suppressed</td><td>—</td></tr>
+          <tr><td>Institutional power named</td><td class="partial">△ temple backdrop</td><td class="check">✓ bishop/order</td><td class="partial">△ guards nearby</td><td class="partial">△ guards ×8</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tag-row reveal">
+      <span class="tag tag-binary">Rethink Binaries</span>
+      <span class="tag tag-power">Examine Power</span>
+      <span class="tag tag-labor">Make Labor Visible</span>
+      <span class="tag tag-embody">Legitimize Embodiment</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 4: COLONIAL & CLASS
+══════════════════════════════════════════ -->
+<section id="colonial" class="bg-ink">
+  <div class="section-inner">
+    <p class="section-kicker reveal">Section IV</p>
+    <h2 class="section-h2 reveal" style="color:var(--paper);">Colonial & Class<br><em style="font-size:.65em;color:#7a7060">Intersectional analysis</em></h2>
+    <p class="section-intro reveal">D'Ignazio & Klein, following Crenshaw's intersectionality, argue that feminist data work must attend to overlapping systems — race, class, colonial power — not gender alone. The divergence between these two texts is nowhere more visible than here.</p>
+
+    <!-- Colonial vocabulary -->
+    <div class="rule reveal" style="background:#3a3530;"></div>
+    <p class="section-kicker reveal">Colonial Vocabulary — Verified Counts</p>
+
+    <div class="data-grid data-grid-4 reveal">
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-g);">Grace</div>
+        <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:var(--accent-g);">4</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#7a7060;margin-bottom:.8rem;">colonial terms</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">anuket</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:100%"></div></div><span class="bar-count">4</span></div>
+        </div>
+        <p style="font-size:.75rem;color:#5a5248;margin-top:.8rem;line-height:1.5;">Geography as backstory, not present condition</p>
+      </div>
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-s);">Stephen</div>
+        <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:var(--accent-s);">4</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#7a7060;margin-bottom:.8rem;">colonial terms</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">anuket</span><div class="bar-track"><div class="bar-fill fill-stephen" style="width:50%"></div></div><span class="bar-count">2</span></div>
+          <div class="bar-row"><span class="bar-term">tongue</span><div class="bar-track"><div class="bar-fill fill-stephen" style="width:25%"></div></div><span class="bar-count">1</span></div>
+          <div class="bar-row"><span class="bar-term">occupation</span><div class="bar-track"><div class="bar-fill fill-stephen" style="width:25%"></div></div><span class="bar-count">1</span></div>
+        </div>
+        <p style="font-size:.75rem;color:#5a5248;margin-top:.8rem;line-height:1.5;">Institutional role, not political</p>
+      </div>
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-v);">Vivika</div>
+        <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:var(--accent-v);">15</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#7a7060;margin-bottom:.8rem;">colonial terms</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">helian</span><div class="bar-track"><div class="bar-fill fill-vivika" style="width:100%"></div></div><span class="bar-count">6</span></div>
+          <div class="bar-row"><span class="bar-term">arkonian</span><div class="bar-track"><div class="bar-fill fill-vivika" style="width:100%"></div></div><span class="bar-count">6</span></div>
+          <div class="bar-row"><span class="bar-term">outlander</span><div class="bar-track"><div class="bar-fill fill-vivika" style="width:33%"></div></div><span class="bar-count">2</span></div>
+          <div class="bar-row"><span class="bar-term">translate</span><div class="bar-track"><div class="bar-fill fill-red" style="width:33%"></div></div><span class="bar-count">2</span></div>
+        </div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-c);">Cassius</div>
+        <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:var(--accent-c);">18</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#7a7060;margin-bottom:.8rem;">colonial terms</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">helian</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:100%"></div></div><span class="bar-count">9</span></div>
+          <div class="bar-row"><span class="bar-term">arkonian</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:67%"></div></div><span class="bar-count">6</span></div>
+          <div class="bar-row"><span class="bar-term">outlander</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:33%"></div></div><span class="bar-count">3</span></div>
+          <div class="bar-row"><span class="bar-term">foreign</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:11%"></div></div><span class="bar-count">1</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box reveal">
+      <p><strong>The colonial gap is stark.</strong> Paladin's Grace: 8 colonial terms total. Manuscript: 33. The fantasy world of Paladin's Grace displaces racial and colonial conflict into the past or into city-as-backdrop, effectively depoliticizing geography. The absence of colonial tension is a choice, not a neutral condition — the "view from nowhere" that D'Ignazio & Klein's third principle asks us to make visible.</p>
+    </div>
+
+    <!-- Vivika's intersectional position -->
+    <div class="rule reveal" style="background:#3a3530;margin-top:3rem;"></div>
+    <p class="section-kicker reveal">Vivika's Intersectional Position</p>
+    <h3 class="reveal" style="font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:1rem;color:var(--paper);">Where Gender and Colonial Power Compound</h3>
+
+    <div class="intersect-wrap reveal">
+      <div class="intersect-col">
+        <div class="intersect-axis" style="color:var(--accent-v);">Gendered subjection</div>
+        <div class="intersect-item">
+          <div class="intersect-dot" style="background:var(--accent-v);"></div>
+          <div class="intersect-text">Called "girl" 5× — infantilized by age/gender</div>
+        </div>
+        <div class="intersect-item">
+          <div class="intersect-dot" style="background:var(--accent-v);"></div>
+          <div class="intersect-text">Whispers 4× — voice suppressed</div>
+        </div>
+        <div class="intersect-item">
+          <div class="intersect-dot" style="background:var(--accent-v);"></div>
+          <div class="intersect-text">Identity anchored to father's survival ×23</div>
+        </div>
+        <div class="intersect-item">
+          <div class="intersect-dot" style="background:var(--accent-v);"></div>
+          <div class="intersect-text">Silence ×4 — stunned, lonely, watchful</div>
+        </div>
+      </div>
+      <div class="intersect-col">
+        <div class="intersect-axis" style="color:var(--accent-c);">Colonial subjection</div>
+        <div class="intersect-item">
+          <div class="intersect-dot" style="background:var(--accent-c);"></div>
+          <div class="intersect-text">Kneels under Helian law ×2</div>
+        </div>
+        <div class="intersect-item">
+          <div class="intersect-dot" style="background:var(--accent-c);"></div>
+          <div class="intersect-text">Translates death announcements for the colonizer</div>
+        </div>
+        <div class="intersect-item">
+          <div class="intersect-dot" style="background:var(--accent-c);"></div>
+          <div class="intersect-text">Outlander camp — displaced population</div>
+        </div>
+        <div class="intersect-item">
+          <div class="intersect-dot" style="background:var(--accent-c);"></div>
+          <div class="intersect-text">"She does speak Helian quiet well…" — praised for compliance</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="warning-box reveal" style="border-color:var(--accent-red);">
+      <p><strong>The voice suppression identified in the feminist reading is not merely gendered — it is colonial.</strong> Vivika whispers and stands in silence because she inhabits two systems of subordination simultaneously: as a woman and as a colonized or semi-colonized subject. This is what Crenshaw's intersectionality, cited by D'Ignazio & Klein, makes visible: her marginalization cannot be reduced to either axis alone.</p>
+    </div>
+
+    <!-- Cassius: colonial ambiguity -->
+    <div class="rule reveal" style="background:#3a3530;margin-top:3rem;"></div>
+    <p class="section-kicker reveal">Cassius — Colonial Ambiguity</p>
+    <h3 class="reveal" style="font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:1rem;color:var(--paper);">Complicity and Conscience</h3>
+
+    <div class="data-grid data-grid-2 reveal">
+      <div class="data-card">
+        <div class="data-card-label">Colonial insider</div>
+        <div class="intersect-item" style="border-color:#3a3530;">
+          <div class="intersect-dot" style="background:var(--accent-c);"></div>
+          <div class="intersect-text">Speaks Helian — language of the dominant</div>
+        </div>
+        <div class="intersect-item" style="border-color:#3a3530;">
+          <div class="intersect-dot" style="background:var(--accent-c);"></div>
+          <div class="intersect-text">Accesses noble families and their networks</div>
+        </div>
+        <div class="intersect-item" style="border-color:#3a3530;">
+          <div class="intersect-dot" style="background:var(--accent-c);"></div>
+          <div class="intersect-text">Uses Helian institutions for personal goals</div>
+        </div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-label">Colonial critic</div>
+        <div class="pull-quote" style="margin:0 0 .5rem;">"Helian inspection, or, how Cassius would call it, Helian extortion…"</div>
+        <div class="pull-quote" style="margin:0 0 .5rem;">"They were miserable, and Cassius couldn't blame them…"</div>
+        <div class="pull-quote" style="margin:0;">"Cassius did something stupid: he buried [the Arkonian]…"</div>
+      </div>
+    </div>
+
+    <!-- Class comparison -->
+    <div class="rule reveal" style="background:#3a3530;margin-top:3rem;"></div>
+    <p class="section-kicker reveal">Class Analysis — Economic Position</p>
+    <h3 class="reveal" style="font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:1rem;color:var(--paper);">How Class Operates in the Data</h3>
+
+    <div class="data-grid data-grid-4 reveal">
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-g);">Grace</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#7a7060;margin-bottom:.8rem;letter-spacing:.1em;text-transform:uppercase;">Artisan / petty bourgeois</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">master</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:100%"></div></div><span class="bar-count">7</span></div>
+          <div class="bar-row"><span class="bar-term">shop</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:57%"></div></div><span class="bar-count">4</span></div>
+          <div class="bar-row"><span class="bar-term">poor</span><div class="bar-track"><div class="bar-fill fill-grace" style="width:43%"></div></div><span class="bar-count">3</span></div>
+        </div>
+        <p style="font-size:.75rem;color:#5a5248;margin-top:.8rem;line-height:1.5;">No debt, no coin, no wage. Class struggle = recognition, not survival.</p>
+      </div>
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-s);">Stephen</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#7a7060;margin-bottom:.8rem;letter-spacing:.1em;text-transform:uppercase;">Institutionally sheltered</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">guard</span><div class="bar-track"><div class="bar-fill fill-stephen" style="width:100%"></div></div><span class="bar-count">8</span></div>
+          <div class="bar-row"><span class="bar-term">debt ✦</span><div class="bar-track"><div class="bar-fill fill-red" style="width:13%"></div></div><span class="bar-count">1</span></div>
+        </div>
+        <p style="font-size:.75rem;color:#5a5248;margin-top:.8rem;line-height:1.5;">Temple = safety net. Debt is spiritual/grief metaphor, not material.</p>
+      </div>
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-v);">Vivika</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#7a7060;margin-bottom:.8rem;letter-spacing:.1em;text-transform:uppercase;">Displaced / precarious</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">guard</span><div class="bar-track"><div class="bar-fill fill-vivika" style="width:100%"></div></div><span class="bar-count">3</span></div>
+          <div class="bar-row"><span class="bar-term">gold / poor</span><div class="bar-track"><div class="bar-fill fill-vivika" style="width:67%"></div></div><span class="bar-count">2 ea.</span></div>
+        </div>
+        <p style="font-size:.75rem;color:#5a5248;margin-top:.8rem;line-height:1.5;">No professional vocabulary. Class = precarity, not craft.</p>
+      </div>
+      <div class="data-card">
+        <div class="data-card-label" style="color:var(--accent-c);">Cassius</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#7a7060;margin-bottom:.8rem;letter-spacing:.1em;text-transform:uppercase;">Downwardly mobile</div>
+        <div class="bar-list">
+          <div class="bar-row"><span class="bar-term">guard</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:100%"></div></div><span class="bar-count">8</span></div>
+          <div class="bar-row"><span class="bar-term">worker</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:38%"></div></div><span class="bar-count">3</span></div>
+          <div class="bar-row"><span class="bar-term">coin</span><div class="bar-track"><div class="bar-fill fill-cassius" style="width:25%"></div></div><span class="bar-count">2</span></div>
+          <div class="bar-row"><span class="bar-term">noble (lost)</span><div class="bar-track"><div class="bar-fill fill-red" style="width:13%"></div></div><span class="bar-count">1</span></div>
+        </div>
+        <p style="font-size:.75rem;color:#5a5248;margin-top:.8rem;line-height:1.5;">"Desperate for coin" + "old Cassius" = class-fall arc.</p>
+      </div>
+    </div>
+
+    <!-- Final summary table -->
+    <div class="rule reveal" style="background:#3a3530;margin-top:3rem;"></div>
+    <p class="section-kicker reveal">Intersectional Summary</p>
+    <div class="reveal" style="overflow-x:auto;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Axis</th>
+            <th style="color:var(--accent-g);">Paladin's Grace</th>
+            <th style="color:var(--accent-v);">Manuscript</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Colonial structure visible in data</td><td class="cross">✗ absent / backdrop (8 terms)</td><td class="check">✓ explicit, named (33 terms)</td></tr>
+          <tr><td>Female protagonist class-precarious</td><td class="cross">✗ craft-stable</td><td class="check">✓ no profession, poor</td></tr>
+          <tr><td>Gender + colonial intersection</td><td class="cross">✗ not present</td><td class="check">✓ kneels, silenced, translates</td></tr>
+          <tr><td>Male protagonist class-mobile</td><td class="partial">△ institutionally sheltered</td><td class="check">✓ downward mobility arc</td></tr>
+          <tr><td>Subject population's labor visible</td><td class="cross">✗ workers absent</td><td class="check">✓ Arkonian workers, camp</td></tr>
+          <tr><td>Institutional power critically named</td><td class="partial">△ temple = benign backdrop</td><td class="check">✓ "Helian extortion" — named</td></tr>
+          <tr><td>Colonial complicity interrogated</td><td class="cross">✗ no colonial actor</td><td class="check">✓ Cassius = insider & critic</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="analysis-box reveal" style="background:#2e2924;border:1px solid #3a3530;margin-top:2rem;">
+      <p>The manuscript is doing something <strong>more politically ambitious</strong> than Paladin's Grace — it builds a colonial world and places its protagonists in genuine structural tension with it. Cassius names imperial extraction as extortion; Vivika's silence is produced by a colonial legal order, not just by gender. The feminist reading becomes richer once we see that Vivika's suppressed voice is the product of <strong>two systems operating simultaneously</strong>. Paladin's Grace sidesteps this question — making it a more comfortable read, but a less politically interrogative one. The manuscript's challenge is to give Vivika's linguistic knowledge the same epistemological authority that Grace's olfactory expertise already carries.</p>
+    </div>
+
+    <div class="tag-row reveal">
+      <span class="tag tag-power">Examine Power</span>
+      <span class="tag tag-context">Consider Context</span>
+      <span class="tag tag-labor">Make Labor Visible</span>
+      <span class="tag tag-plural">Embrace Pluralism</span>
+    </div>
+
+    <!-- Footnote -->
+    <div class="footnote reveal">
+      <p><strong>Data sources:</strong> Voyant Tools keyword-in-context (KWIC) and corpus collocates exports. Grace: 786 tokens; Stephen: 789 tokens (<em>Paladin's Grace</em>, T. Kingfisher, 2020). Vivika: 459 tokens; Cassius: 437 tokens (manuscript). All postcolonial and class counts verified using regex word-boundary matching to eliminate false positives.</p>
+      <p style="margin-top:.8rem;"><strong>Framework:</strong> D'Ignazio, C. & Klein, L.F. (2016). Feminist Data Visualization. <em>IEEE VIS Workshop on Visualization for the Digital Humanities</em>. Intersectionality concept from Crenshaw, K. (1989), as cited therein.</p>
+    </div>
+  </div>
+</section>
+
 
 <script>
-const DATA = {"vivika_collocates":[{"term":"cassius","freq":39},{"term":"ulma","freq":18},{"term":"looked","freq":17},{"term":"father","freq":17},{"term":"took","freq":16},{"term":"turned","freq":15},{"term":"janus","freq":15},{"term":"eyes","freq":15},{"term":"said","freq":13},{"term":"nodded","freq":13},{"term":"glanced","freq":12},{"term":"voice","freq":10},{"term":"vivika","freq":10},{"term":"hand","freq":10},{"term":"didn\u2019t","freq":10},{"term":"bit","freq":10},{"term":"woman","freq":9},{"term":"stood","freq":9},{"term":"stared","freq":9},{"term":"princess","freq":9},{"term":"couldn\u2019t","freq":9},{"term":"away","freq":9},{"term":"whispered","freq":8},{"term":"sabine","freq":8},{"term":"like","freq":8}],"cassius_collocates":[{"term":"vivika","freq":38},{"term":"said","freq":26},{"term":"sabine","freq":15},{"term":"hand","freq":14},{"term":"turned","freq":12},{"term":"took","freq":11},{"term":"cassius","freq":11},{"term":"nodded","freq":10},{"term":"know","freq":10},{"term":"head","freq":10},{"term":"knew","freq":9},{"term":"away","freq":9},{"term":"time","freq":8},{"term":"guard","freq":8},{"term":"gaze","freq":8},{"term":"father","freq":8},{"term":"eyes","freq":8},{"term":"don't","freq":8},{"term":"pollius","freq":7},{"term":"man","freq":7},{"term":"inside","freq":7},{"term":"helian","freq":7},{"term":"glanced","freq":7},{"term":"voice","freq":6},{"term":"titus","freq":6}],"vivika_contexts":{"power":[{"l":"or there will be consequences.","r":"translate.\"\n         Cassius glanced back. Suddenly"},{"l":"join us. The overseer's pet.\"","r":"tucked a strand of hair"},{"l":"bread delivered to her father,","r":"made her way toward\n         Overseer"},{"l":"behind him, no guard stopped","r":"as she followed Janus.\n         Sunlight"},{"l":"The question was directed at","r":". She nodded. \"Y-yes\u2026 But"},{"l":"Princess Sabine, this is Vivika,\"","r":"said, signaling a very-much"}],"affect":[{"l":"slip away.\n         Biting her lip,","r":"turned to her father.\n         He"},{"l":"Ulma had stopped talking to","r":"altogether, and she couldn\u2019t blame"},{"l":"out of the outlander\n         camp.","r":"looked up toward the city"},{"l":"late to stop the commotion.","r":"couldn't even keep her last"},{"l":"with unshed tears of relief,","r":"led her father through the"},{"l":"the whispering voice from before.","r":"looked behind Ulma,\n         finding a"},{"l":"dread gnawing at her,","r":"approached him. As his interpreter"},{"l":"heavy from lack of sleep,","r":"splashed her face and stared"}],"restraint":[{"l":"and his narrowed eyes pierced","r":". She said nothing,\n         instead extending"},{"l":"Gunniver rolled his eyes, and","r":"suppressed a smile at Ulma's"},{"l":"Despite her refusal,","r":"found herself sorely tempted. If"},{"l":"bodies before they were burned.\"","r":"stood in stunned silence as"},{"l":"couldn\u2019t blame\n         the elderly woman\u2014","r":"had indeed been useless. \n         Worse"},{"l":"late to stop the commotion.","r":"couldn't even keep her last"}],"body":[{"l":"his narrowed eyes pierced","r":". She said nothing, instead extending"},{"l":"of losing that love grew.","r":"swallowed before placing a hand"},{"l":"mind like an angry cat.","r":"opened her eyes slightly. Lit"},{"l":"The overseer's pet.\"","r":"tucked a strand of hair"},{"l":"She outstretched her hands toward","r":", the tips of her fingers"},{"l":"dread gnawing at her,","r":"approached him. As his interpreter"}],"agency":[{"l":"stay and protect\n         the books.\"","r":"shook her head. \"It\u2019s too"},{"l":"then you\u2019ll see the truth!\"","r":"turned around and slammed the"},{"l":"VIVIKA IX\n\n\n         ","r":"fumed as Cassius practically raced"},{"l":"Dread gnawing at her,","r":"approached him. As his interpreter"},{"l":"late.","r":"couldn't even keep her last"}]},"cassius_contexts":{"concealment":[{"l":"freckled cheeks.\n         For Sabine's sake,","r":"returned the smile\u2014although he"},{"l":"Matriarch Tertia is very pious.\"","r":"took another gulp to hide"},{"l":"I suppose you read it.\"","r":"said nothing. He wanted her"},{"l":"had almost killed was unbearable.","r":"turned\n         and forced his way"},{"l":"would also pretend not known","r":"had broken the lock on"}],"affect":[{"l":"\n         \n         Cassius I\n         \n         ","r":"hated entering the dark, blistering"},{"l":"quiet everyone must be here.\"","r":"wished he could say the"},{"l":"villa's oppressive silence,","r":"considered what to\n         do next"},{"l":"our conversation?\" For some reason,","r":"felt naked at the thought"},{"l":"from the villa's oppressive silence,","r":"considered what to do next"}],"knowledge":[{"l":"Do you know with whom?\"","r":"nodded. He had expected the"},{"l":"me. One I won't like,\"","r":"said, filling the silence. He"},{"l":"under that amount of pressure.","r":"thought the blame lied at"},{"l":"could recognize life-earned scars.","r":"knew\n         what it was to"},{"l":"was no surprise, but clearly","r":"knew far more\n         than he"}],"vulnerability":[{"l":"our conversation?\" For some reason,","r":"felt naked at the thought"},{"l":"could recognize life-earned scars.","r":"knew\n         what it was to"},{"l":"man equal to his\n         achievements.","r":"never knew his father and"},{"l":"hot, trembling air.\n         Smoke filled","r":"' lungs and eyes, and for"},{"l":"What would Sabine think if","r":"confessed that's how he saw"}],"action":[{"l":"the middle of a festival.","r":"guided them through the crowd"},{"l":"after leaving the forum,","r":"guided them to another busy"},{"l":"the promised linens\n         and basin.","r":"took them.\n         \"Let's go upstairs"},{"l":"go upstairs,\" he told Vivika.","r":"led them up a narrow"},{"l":"in the care of Varrus,","r":"guided Vivika to an old"}]},"comparison":[{"label":"grammatical subject","vivika":27.4,"cassius":38.7,"note":"% of contexts"},{"label":"affect collocates","vivika":60,"cassius":36,"note":"total freq tokens"},{"label":"restraint contexts","vivika":40,"cassius":17,"note":"count"},{"label":"body collocates","vivika":72,"cassius":63,"note":"total freq"}],"principles":[{"id":"binaries","title":"Rethink binaries","vivika":"Object 138\u00d7, Subject 126\u00d7 — slightly more acted-upon than acting","cassius":"Subject 169\u00d7 — dominant grammatical agent throughout","insight":"Near-parity for Vivika complicates a simple reading, but the gap slightly favours the objectified position. A feminist reading asks not just who acts, but in which scenes and toward whom."},{"id":"affect","title":"Legitimize embodiment & affect","vivika":"60 affect tokens — rich but suppressed. Whispered, swallowed, gulped, biting her lip, sighed.","cassius":"36 affect tokens — sparse, cognitive-dominant. Rare breaks: felt naked, hated, lonely, dread.","insight":"Both restrict affect under different regimes. She restrains externally under power structures. He performs composure as learned social labour. The feminist lens reveals both as constrained — but differently."},{"id":"power","title":"Examine power & aspire to empowerment","vivika":"Named instrumentally ('Vivika, translate'). Interrupted 4\u00d7, always by Cassius. Defined as his possession when Sabine asks 'Is she yours?'","cassius":"Commands, guides, leads. Multiple identities (Cassius Valeri / Caius) as tool. Knowledge as currency: knew (9\u00d7), know (10\u00d7). 'killed' in orbit 4\u00d7.","insight":"'Cassius glanced back. Suddenly, this Vivika had become far more interesting to him.' The demonstrative 'this' performs objectification in a single word — she is an instance evaluated for utility."},{"id":"context","title":"Consider context","vivika":"Interiority expands structurally when Cassius is absent. Chapter openings show her planning, angry, in motion.","cassius":"Softer vocabulary with women (kindness, friendship, smile). Harder register with men (guard, authority, information).","insight":"'With Cassius gone, Vivika considered her next steps.' His presence is spatial — it compresses her narrative range. The data encodes this as a structural, not incidental, pattern."},{"id":"labor","title":"Make labor visible","vivika":"Translator labor issued as command, credited to Cassius's sponsorship. Her linguistic work makes his authority possible and legible.","cassius":"Emotional management as hidden labour — returned smiles, strategic silences, concealed reactions. 'For Sabine's sake, Cassius returned the smile — although he...'","insight":"Feminist reading surfaces two invisible labours: her linguistic work and his affective performance. Neither is acknowledged in the text's social world. Both are load-bearing."}]};
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
 
-let currentChar = 'vivika';
-let currentCtxChar = 'vivika';
-let currentSection = 'overview';
+  // Animate bars when visible
+  const barFills = document.querySelectorAll('.bar-fill, .agency-fill');
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const w = el.style.width;
+        el.style.width = '0';
+        setTimeout(() => { el.style.width = w; }, 200);
+        barObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.2 });
+  barFills.forEach(el => barObserver.observe(el));
 
-// ─── SECTION NAV ───
-function showSection(id) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
-  document.getElementById('section-' + id).classList.add('visible');
-  document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.aside-link').forEach(l => l.classList.remove('active'));
-  document.querySelectorAll('.nav-pill').forEach(p => {
-    if (p.getAttribute('onclick') && p.getAttribute('onclick').includes(id)) p.classList.add('active');
-  });
-  document.querySelectorAll('.aside-link').forEach(l => {
-    if (l.getAttribute('onclick') && l.getAttribute('onclick').includes(id)) l.classList.add('active');
-  });
-  currentSection = id;
-  if (id === 'collocates') renderBubbles(currentChar);
-  if (id === 'contexts') renderContexts();
-  if (id === 'comparison') renderComparison();
-  if (id === 'principles') renderPrinciples();
-  if (id === 'overview') drawNetwork();
-}
-
-// ─── CHARACTER TOGGLE ───
-function setChar(char) {
-  currentChar = char;
-  document.getElementById('btn-vivika').className = 'char-btn' + (char === 'vivika' ? ' active-v' : '');
-  document.getElementById('btn-cassius').className = 'char-btn' + (char === 'cassius' ? ' active-c' : '');
-  renderAsideStats();
-  if (currentSection === 'collocates') renderBubbles(char);
-}
-
-function renderAsideStats() {
-  const isV = currentChar === 'vivika';
-  const cls = isV ? 'val-v' : 'val-c';
-  document.getElementById('aside-stats').innerHTML = `
-    <div class="stat-mini"><span>Occurrences</span><span class="val ${cls}">${isV ? 459 : 437}</span></div>
-    <div class="stat-mini"><span>As subject</span><span class="val ${cls}">${isV ? '27.4%' : '38.7%'}</span></div>
-    <div class="stat-mini"><span>Affect tokens</span><span class="val ${cls}">${isV ? 60 : 36}</span></div>
-    <div class="stat-mini"><span>Top collocate</span><span class="val ${cls}" style="font-style:italic;font-size:13px;">${isV ? 'cassius' : 'vivika'}</span></div>
-  `;
-}
-
-// ─── BUBBLE CHART ───
-function renderBubbles(char) {
-  currentChar = char;
-  const container = document.getElementById('bubble-container');
-  container.innerHTML = '';
-  const data = char === 'vivika' ? DATA.vivika_collocates : DATA.cassius_collocates;
-  const cls = char === 'vivika' ? 'bubble-v' : 'bubble-c';
-  document.getElementById('bubble-legend-vivika').style.display = char === 'vivika' ? '' : 'none';
-  document.getElementById('bubble-legend-cassius').style.display = char === 'cassius' ? '' : 'none';
-  const bt = document.getElementById('bubble-tab-v');
-  const bc = document.getElementById('bubble-tab-c');
-  bt.className = 'ctx-tab' + (char === 'vivika' ? ' active-v' : '');
-  bc.className = 'ctx-tab' + (char === 'cassius' ? ' active-c' : '');
-
-  const maxFreq = data[0].freq;
-  const w = container.offsetWidth || 600;
-  const h = 340;
-  const placed = [];
-
-  function overlaps(x, y, r) {
-    for (const p of placed) {
-      const dx = x - p.x, dy = y - p.y;
-      if (Math.sqrt(dx*dx + dy*dy) < r + p.r + 4) return true;
-    }
-    return false;
-  }
-
-  data.forEach((d, i) => {
-    const r = Math.max(22, Math.min(58, 22 + (d.freq / maxFreq) * 46));
-    let x, y, attempts = 0;
-    do {
-      x = r + Math.random() * (w - 2 * r);
-      y = r + Math.random() * (h - 2 * r);
-      attempts++;
-    } while (overlaps(x, y, r) && attempts < 100);
-    placed.push({ x, y, r });
-
-    const el = document.createElement('div');
-    el.className = 'bubble ' + cls;
-    el.style.cssText = `width:${r*2}px;height:${r*2}px;left:${x-r}px;top:${y-r}px;font-size:${Math.max(10, r/3.2)}px;`;
-    el.title = `${d.term}: ${d.freq} co-occurrences`;
-    el.innerHTML = `<span>${d.term}<br><span style="font-size:${Math.max(9,r/4.5)}px;opacity:0.7;font-style:normal;">${d.freq}</span></span>`;
-    container.appendChild(el);
-  });
-}
-
-// ─── CONTEXT PANELS ───
-function setContextChar(char) {
-  currentCtxChar = char;
-  document.getElementById('ctx-char-v').className = 'ctx-tab' + (char === 'vivika' ? ' active-v' : '');
-  document.getElementById('ctx-char-c').className = 'ctx-tab' + (char === 'cassius' ? ' active-c' : '');
-  renderContexts();
-}
-
-function renderContexts() {
-  const char = currentCtxChar;
-  const isV = char === 'vivika';
-  const ctxData = isV ? DATA.vivika_contexts : DATA.cassius_contexts;
-  const keyClass = isV ? 'kwic-key-v' : 'kwic-key-c';
-  const tabActive = isV ? 'active-v' : 'active-c';
-  const name = isV ? 'Vivika' : 'Cassius';
-
-  const categories = {
-    vivika: {power:'Power & authority',affect:'Affect & emotion',restraint:'Restraint',body:'Body language',agency:'Agency'},
-    cassius: {concealment:'Concealment',affect:'Affect',knowledge:'Knowledge',vulnerability:'Vulnerability',action:'Action'}
-  };
-  const cats = categories[char];
-  const keys = Object.keys(cats);
-
-  const tabsEl = document.getElementById('ctx-tabs');
-  tabsEl.innerHTML = keys.map((k, i) =>
-    `<button class="ctx-tab${i===0?' '+tabActive:''}" onclick="switchCtxTab('${k}','${char}',this)">${cats[k]}</button>`
-  ).join('');
-
-  const panelsEl = document.getElementById('ctx-panels');
-  panelsEl.innerHTML = keys.map((k, i) => {
-    const rows = (ctxData[k] || []).map(c =>
-      `<div class="kwic">
-        <span class="kwic-left">…${c.l}</span>
-        <span class="${keyClass}">${name}</span>
-        <span class="kwic-right">${c.r}…</span>
-      </div>`
-    ).join('');
-    return `<div class="ctx-panel${i===0?' visible':''}" id="ctx-panel-${k}">${rows || '<p style="font-style:italic;color:var(--ink-muted);padding:1rem 0;">No contexts in this category.</p>'}</div>`;
-  }).join('');
-}
-
-function switchCtxTab(key, char, el) {
-  const isV = char === 'vivika';
-  document.querySelectorAll('.ctx-tab').forEach(t => {
-    t.classList.remove('active-v','active-c');
-  });
-  el.classList.add(isV ? 'active-v' : 'active-c');
-  document.querySelectorAll('.ctx-panel').forEach(p => p.classList.remove('visible'));
-  const panel = document.getElementById('ctx-panel-' + key);
-  if (panel) panel.classList.add('visible');
-}
-
-// ─── COMPARISON ───
-function renderComparison() {
-  const grid = document.getElementById('compare-grid');
-  const maxes = {
-    'grammatical subject': 100,
-    'affect collocates': 100,
-    'restraint contexts': 60,
-    'body collocates': 100
-  };
-  grid.innerHTML = DATA.comparison.map(row => {
-    const max = Math.max(row.vivika, row.cassius) * 1.15;
-    const vw = (row.vivika / max * 100).toFixed(1);
-    const cw = (row.cassius / max * 100).toFixed(1);
-    return `<div class="compare-row">
-      <div class="compare-label">${row.label} <span style="font-weight:300;text-transform:none;letter-spacing:0;">(${row.note})</span></div>
-      <div class="compare-bars">
-        <div class="cbar-row">
-          <span class="cbar-name" style="color:var(--accent-v);font-style:italic;">Vivika</span>
-          <div class="cbar-track"><div class="cbar-fill fill-v" style="width:${vw}%"></div></div>
-          <span class="cbar-val val-v">${row.vivika}</span>
-        </div>
-        <div class="cbar-row">
-          <span class="cbar-name" style="color:var(--accent-c);font-style:italic;">Cassius</span>
-          <div class="cbar-track"><div class="cbar-fill fill-c" style="width:${cw}%"></div></div>
-          <span class="cbar-val val-c">${row.cassius}</span>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-
-  // Affect tags
-  const vAffect = [['whispered',8],['hope',6],['sighed',6],['pain',5],['swallowed',4],['silence',4],['tired',4],['hurt',3],['gulped',3],['tears',2],['bitter',2],['fear',2]];
-  const cAffect = [['knew',9],['thought',4],['felt',3],['hated',2],['bitter',2],['wished',1],['dread',1],['lonely',1],['love',1],['relief',1],['confused',1]];
-
-  document.getElementById('vivika-affect-tags').innerHTML = vAffect.map(([t,f]) =>
-    `<span style="display:inline-block;background:rgba(139,58,58,0.1);color:var(--accent-v);border-radius:3px;padding:2px 8px;font-size:13px;font-family:var(--body);font-style:italic;margin:2px;">${t} <span style="font-family:var(--mono);font-size:10px;opacity:0.7;">${f}</span></span>`
-  ).join('');
-
-  document.getElementById('cassius-affect-tags').innerHTML = cAffect.map(([t,f]) =>
-    `<span style="display:inline-block;background:rgba(42,74,107,0.1);color:var(--accent-c);border-radius:3px;padding:2px 8px;font-size:13px;font-family:var(--body);font-style:italic;margin:2px;">${t} <span style="font-family:var(--mono);font-size:10px;opacity:0.7;">${f}</span></span>`
-  ).join('');
-}
-
-// ─── PRINCIPLES ───
-function renderPrinciples() {
-  const el = document.getElementById('principles-list');
-  el.innerHTML = DATA.principles.map(p => `
-    <div class="principle-card" id="pc-${p.id}" onclick="togglePrinciple('${p.id}')">
-      <div class="pc-header">
-        <div class="pc-title">${p.title}</div>
-        <div class="pc-toggle">+</div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-char">
-          <div class="pc-char-label pc-char-label-v">Vivika</div>
-          ${p.vivika}
-        </div>
-        <div class="pc-char">
-          <div class="pc-char-label pc-char-label-c">Cassius</div>
-          ${p.cassius}
-        </div>
-        <div class="pc-insight">${p.insight}</div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function togglePrinciple(id) {
-  document.getElementById('pc-' + id).classList.toggle('open');
-}
-
-// ─── NETWORK CANVAS ───
-function drawNetwork() {
-  const canvas = document.getElementById('network-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
-  const w = canvas.offsetWidth;
-  const h = 360;
-  canvas.width = w * dpr;
-  canvas.height = h * dpr;
-  ctx.scale(dpr, dpr);
-
-  ctx.clearRect(0, 0, w, h);
-
-  // Nodes
-  const vx = w * 0.35, vy = h * 0.45;
-  const cx = w * 0.65, cy = h * 0.45;
-
-  // Shared collocates
-  const shared = ['said','turned','nodded','took','eyes','voice','hand','glanced','away','father','sabine'];
-  const vOnly = ['ulma','looked','janus','bit','stared','princess','woman','whispered'];
-  const cOnly = ['know','knew','guard','pollius','titus','helian','gaze','man','don\'t','inside'];
-
-  function getPos(term, isV) {
-    const idx = (isV ? vOnly : cOnly).indexOf(term);
-    const total = isV ? vOnly.length : cOnly.length;
-    const angle = (idx / total) * Math.PI * 1.4 + (isV ? Math.PI * 0.8 : -Math.PI * 0.1);
-    const r = 95 + Math.random() * 15;
-    const bx = isV ? vx : cx;
-    const by = isV ? vy : cy;
-    return { x: bx + Math.cos(angle) * r, y: by + Math.sin(angle) * r };
-  }
-
-  function sharedPos(term, i, total) {
-    const t = (i / total) * 0.7 + 0.15;
-    return {
-      x: vx + (cx - vx) * t + (Math.random() - 0.5) * 60,
-      y: vy + (Math.random() - 0.5) * 120
-    };
-  }
-
-  // Draw connecting line between V and C
-  ctx.beginPath();
-  ctx.moveTo(vx, vy);
-  ctx.lineTo(cx, cy);
-  ctx.strokeStyle = 'rgba(74, 107, 58, 0.3)';
-  ctx.lineWidth = 8;
-  ctx.stroke();
-  ctx.font = '11px JetBrains Mono, monospace';
-  ctx.fillStyle = 'rgba(74,107,58,0.7)';
-  ctx.textAlign = 'center';
-  ctx.fillText('39 co-occurrences', (vx+cx)/2, vy - 16);
-
-  // Draw shared collocate nodes
-  shared.forEach((term, i) => {
-    const pos = sharedPos(term, i, shared.length);
-    ctx.beginPath(); ctx.moveTo(vx, vy); ctx.lineTo(pos.x, pos.y);
-    ctx.strokeStyle = 'rgba(139,58,58,0.08)'; ctx.lineWidth = 0.5; ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(pos.x, pos.y);
-    ctx.strokeStyle = 'rgba(42,74,107,0.08)'; ctx.lineWidth = 0.5; ctx.stroke();
-    ctx.beginPath(); ctx.arc(pos.x, pos.y, 5, 0, Math.PI*2);
-    ctx.fillStyle = 'rgba(74,107,58,0.35)'; ctx.fill();
-    ctx.font = '10px Crimson Pro, serif'; ctx.fillStyle = 'rgba(74,107,58,0.8)';
-    ctx.textAlign = 'center'; ctx.fillText(term, pos.x, pos.y - 8);
-  });
-
-  // V-only nodes
-  vOnly.forEach((term, i) => {
-    const pos = getPos(term, true);
-    ctx.beginPath(); ctx.moveTo(vx, vy); ctx.lineTo(pos.x, pos.y);
-    ctx.strokeStyle = 'rgba(139,58,58,0.15)'; ctx.lineWidth = 0.8; ctx.stroke();
-    ctx.beginPath(); ctx.arc(pos.x, pos.y, 5, 0, Math.PI*2);
-    ctx.fillStyle = 'rgba(139,58,58,0.4)'; ctx.fill();
-    ctx.font = '10px Crimson Pro, serif'; ctx.fillStyle = 'rgba(139,58,58,0.85)';
-    ctx.textAlign = pos.x < vx ? 'right' : 'left';
-    ctx.fillText(term, pos.x + (pos.x < vx ? -8 : 8), pos.y + 4);
-  });
-
-  // C-only nodes
-  cOnly.forEach((term, i) => {
-    const pos = getPos(term, false);
-    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(pos.x, pos.y);
-    ctx.strokeStyle = 'rgba(42,74,107,0.15)'; ctx.lineWidth = 0.8; ctx.stroke();
-    ctx.beginPath(); ctx.arc(pos.x, pos.y, 5, 0, Math.PI*2);
-    ctx.fillStyle = 'rgba(42,74,107,0.4)'; ctx.fill();
-    ctx.font = '10px Crimson Pro, serif'; ctx.fillStyle = 'rgba(42,74,107,0.85)';
-    ctx.textAlign = pos.x > cx ? 'left' : 'right';
-    ctx.fillText(term, pos.x + (pos.x > cx ? 8 : -8), pos.y + 4);
-  });
-
-  // Main nodes — drawn last (on top)
-  // V
-  ctx.beginPath(); ctx.arc(vx, vy, 34, 0, Math.PI*2);
-  ctx.fillStyle = 'rgba(139,58,58,0.12)'; ctx.fill();
-  ctx.strokeStyle = 'rgba(139,58,58,0.5)'; ctx.lineWidth = 1.5; ctx.stroke();
-  ctx.font = 'italic 600 17px Playfair Display, serif';
-  ctx.fillStyle = '#8b3a3a'; ctx.textAlign = 'center';
-  ctx.fillText('Vivika', vx, vy + 1);
-  ctx.font = '10px JetBrains Mono, monospace';
-  ctx.fillStyle = 'rgba(139,58,58,0.6)';
-  ctx.fillText('459', vx, vy + 14);
-
-  // C
-  ctx.beginPath(); ctx.arc(cx, cy, 34, 0, Math.PI*2);
-  ctx.fillStyle = 'rgba(42,74,107,0.12)'; ctx.fill();
-  ctx.strokeStyle = 'rgba(42,74,107,0.5)'; ctx.lineWidth = 1.5; ctx.stroke();
-  ctx.font = 'italic 600 17px Playfair Display, serif';
-  ctx.fillStyle = '#2a4a6b'; ctx.textAlign = 'center';
-  ctx.fillText('Cassius', cx, cy + 1);
-  ctx.font = '10px JetBrains Mono, monospace';
-  ctx.fillStyle = 'rgba(42,74,107,0.6)';
-  ctx.fillText('437', cx, cy + 14);
-}
-
-// ─── INIT ───
-renderAsideStats();
-renderContexts();
-setTimeout(drawNetwork, 100);
+  // Active nav
+  const sections = document.querySelectorAll('section[id], header');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.opacity = a.getAttribute('href') === '#' + current ? '1' : '0.6';
+    });
+  }, { passive: true });
 </script>
 </body>
 </html>
